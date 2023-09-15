@@ -2,6 +2,8 @@ from node import Node
 from time import sleep,time
 from api import GRPCAPI,DynamoAPI
 
+def main2():
+    pass
 
 def main():
     print('starting..')
@@ -30,4 +32,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main2()
