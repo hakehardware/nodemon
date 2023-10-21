@@ -27,7 +27,7 @@ class TableApp(App):
 
     @work(thread=True)
     def update_node_data(self) -> None:
-        with open('example.config.json', 'r') as config_file:
+        with open('config.json', 'r') as config_file:
             config = json.load(config_file)
 
         nodes = []
