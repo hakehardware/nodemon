@@ -7,6 +7,7 @@ class Node:
             "name": config['name'],
             "public": config['public'],
             "private": config['private'],
+            "host": config['public'].split(':')[0],
             "highest_atx": None,
             "version": None,
             "build": None,
@@ -26,6 +27,7 @@ class Node:
             "provider_id": None,
             "max_file_size_gib": None,
             "space_units": None,
+            "size_gib": None,
             "available_providers": None,
             "heartbeat": None
         }
@@ -43,11 +45,11 @@ class Node:
     def set_node_status(self):
         node_status = GRPCAPI.get_node_status(self.node_data["public"])
         if node_status:
-            self.node_data["connected_peers"] = node_status.get("status", {}).get("connectedPeers", None)
+            self.node_data["connected_peers"] = node_status.get("status", {}).get("connectedPeers", "None")
             self.node_data["synced"] = node_status.get("status",  {}).get("isSynced", False)
-            self.node_data["synced_layer"] = node_status.get("status",  {}).get("syncedLayer",  {}).get("number", None)
-            self.node_data["top_layer"] = node_status.get("status",  {}).get("topLayer",  {}).get("number", None)
-            self.node_data["verified_layer"] = node_status.get("status",  {}).get("verifiedLayer",  {}).get("number", None)
+            self.node_data["synced_layer"] = node_status.get("status",  {}).get("syncedLayer",  {}).get("number", "0")
+            self.node_data["top_layer"] = node_status.get("status",  {}).get("topLayer",  {}).get("number", "0")
+            self.node_data["verified_layer"] = node_status.get("status",  {}).get("verifiedLayer",  {}).get("number", "0")
         else:
             #TODO: Handle Error
             pass
@@ -56,9 +58,9 @@ class Node:
         node_info = GRPCAPI.get_node_info(self.node_data["public"])
 
         if node_info:
-            self.node_data["first_genesis"] = node_info.get("firstGenesis", None)
-            self.node_data["epoch_size"] = node_info.get("epochSize", None)
-            self.node_data["effective_genesis"] = node_info.get("effectiveGenesis", None)
+            self.node_data["first_genesis"] = node_info.get("firstGenesis", "0")
+            self.node_data["epoch_size"] = node_info.get("epochSize", "0")
+            self.node_data["effective_genesis"] = node_info.get("effectiveGenesis", "0")
         else:
             #TODO: Handle Error
             pass
@@ -73,22 +75,25 @@ class Node:
 
     def set_coinbase(self):
         coinbase = GRPCAPI.get_coinbase(self.node_data["private"])
-        self.node_data["coinbase"] = coinbase.get("accountId",  {}).get("address", None)
+        self.node_data["coinbase"] = coinbase.get("accountId",  {}).get("address", "None")
 
     def set_post_setup_status(self):
         post_setup_status = GRPCAPI.get_post_setup_status(self.node_data["private"])
         if post_setup_status:
-            self.node_data["post_state"] = post_setup_status.get("status",  {}).get("state", None)
-            self.node_data["post_data_dir"] = post_setup_status.get("status",  {}).get("opts",  {}).get("dataDir", None)
-            self.node_data["provider_id"] = post_setup_status.get("status",  {}).get("opts",  {}).get("providerId", None)
+            self.node_data["post_state"] = post_setup_status.get("status",  {}).get("state", "None")
+            self.node_data["post_data_dir"] = post_setup_status.get("status",  {}).get("opts",  {}).get("dataDir", "None")
+            self.node_data["provider_id"] = post_setup_status.get("status",  {}).get("opts",  {}).get("providerId", "None")
 
             max_file_size = post_setup_status.get("status",  {}).get("opts",  {}).get("maxFileSize", None)
             if(max_file_size):
                 self.node_data["max_file_size_gib"] = int(int() / 1024**3)
             else:
-                self.node_data["max_file_size_gib"] = None
+                self.node_data["max_file_size_gib"] = "0"
 
-            self.node_data["space_units"] = post_setup_status.get("status",  {}).get("opts",  {}).get("numUnits", None)
+            self.node_data["space_units"] = post_setup_status.get("status",  {}).get("opts",  {}).get("numUnits", 0)
+            if self.node_data["space_units"] > 0:
+                self.node_data["size_gib"] = self.node_data["space_units"] * 64
+
         else:
             #TODO: Handle Error
             pass
