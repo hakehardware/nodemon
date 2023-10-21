@@ -2,9 +2,6 @@ from node import Node
 from time import sleep,time
 from api import GRPCAPI,DynamoAPI
 
-def main2():
-    pass
-
 def main():
     print('starting..')
     node = Node()
@@ -21,15 +18,16 @@ def main():
         node.set_coinbase(GRPCAPI.get_coinbase())
         node.set_post_setup_status(GRPCAPI.get_post_setup_status())
         node.set_post_setup_status_providers(GRPCAPI.get_post_setup_status_providers())
-        node.set_heartbeat(time.time())
+        node.set_heartbeat(time())
         
         print('Sending Update')
-        response = DynamoAPI.send_update(node.get_node_data())
-        if not response:
-            print('Error Updating Dynamo')
-        break
+        print(node.get_node_data())
+        #response = DynamoAPI.send_update(node.get_node_data())
+        # if not response:
+        #     print('Error Updating Dynamo')
+        # break
         sleep(5)
 
 
 if __name__ == "__main__":
-    main2()
+    main()

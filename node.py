@@ -39,11 +39,11 @@ class Node:
     def set_node_status(self, node_status):
         node_status = node_status
         if node_status:
-            self.node_data["connected_peers"] = node_status["status"]["connectedPeers"]
-            self.node_data["synced"] = node_status["status"]["isSynced"]
-            self.node_data["synced_layer"] = node_status["status"]["syncedLayer"]["number"]
-            self.node_data["top_layer"] = node_status["status"]["topLayer"]["number"]
-            self.node_data["verified_layer"] = node_status["status"]["verifiedLayer"]["number"]
+            self.node_data["connected_peers"] = node_status.get("status", {}).get("connectedPeers", None)
+            self.node_data["synced"] = node_status.get("status",  {}).get("isSynced", False)
+            self.node_data["synced_layer"] = node_status.get("status",  {}).get("syncedLayer",  {}).get("number", None)
+            self.node_data["top_layer"] = node_status.get("status",  {}).get("topLayer",  {}).get("number", None)
+            self.node_data["verified_layer"] = node_status.get("status",  {}).get("verifiedLayer",  {}).get("number", None)
         else:
             #TODO: Handle Error
             pass
@@ -52,29 +52,35 @@ class Node:
         node_info = node_info
 
         if node_info:
-            self.node_data["first_genesis"] = node_info["firstGenesis"]
-            self.node_data["epoch_size"] = node_info["epochSize"]
-            self.node_data["effective_genesis"] = node_info["effectiveGenesis"]
+            self.node_data["first_genesis"] = node_info.get("firstGenesis", None)
+            self.node_data["epoch_size"] = node_info.get("epochSize", None)
+            self.node_data["effective_genesis"] = node_info.get("effectiveGenesis", None)
         else:
             #TODO: Handle Error
             pass
 
     def set_is_smeshing(self, is_smeshing):
-        self.node_data["smeshing"] = is_smeshing["isSmeshing"]
+        self.node_data["smeshing"] = is_smeshing.get("isSmeshing", False)
 
     def set_smesher_id(self, smesher_id):
-        self.node_data["node_id"] = smesher_id["publicKey"]
+        self.node_data["node_id"] = smesher_id.get("publicKey")
 
     def set_coinbase(self, coinbase):
-        self.node_data["coinbase"] = coinbase["accountId"]["address"]
+        self.node_data["coinbase"] = coinbase.get("accountId",  {}).get("address", None)
 
     def set_post_setup_status(self, post_setup_status):
         if post_setup_status:
-            self.node_data["post_state"] = post_setup_status["status"]["state"]
-            self.node_data["post_data_dir"] = post_setup_status["status"]["opts"]["dataDir"]
-            self.node_data["provider_id"] = post_setup_status["status"]["opts"]["providerId"]
-            self.node_data["max_file_size_gib"] = int(int(post_setup_status["status"]["opts"]["maxFileSize"]) / 1024**3)
-            self.node_data["space_units"] = post_setup_status["status"]["opts"]["numUnits"]
+            self.node_data["post_state"] = post_setup_status.get("status",  {}).get("state", None)
+            self.node_data["post_data_dir"] = post_setup_status.get("status",  {}).get("opts",  {}).get("dataDir", None)
+            self.node_data["provider_id"] = post_setup_status.get("status",  {}).get("opts",  {}).get("providerId", None)
+
+            max_file_size = post_setup_status.get("status",  {}).get("opts",  {}).get("maxFileSize", None)
+            if(max_file_size):
+                self.node_data["max_file_size_gib"] = int(int() / 1024**3)
+            else:
+                self.node_data["max_file_size_gib"] = None
+
+            self.node_data["space_units"] = post_setup_status.get("status",  {}).get("opts",  {}).get("numUnits", None)
         else:
             #TODO: Handle Error
             pass
