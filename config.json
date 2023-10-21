@@ -1,9 +1,0 @@
-{
-    "nodes": [
-        {
-            "public": "localhost:9092",
-            "private": "localhost:9093",
-            "name": "Delta 01"
-        }
-    ]
-}
