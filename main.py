@@ -1,32 +1,42 @@
 from node import Node
 from time import sleep,time
-from api import GRPCAPI,DynamoAPI
+from api import GRPCAPI
+import json
 
 def main():
-    print('starting..')
-    node = Node()
+    # Open and load the JSON config file
+    with open('example.config.json', 'r') as config_file:
+        config = json.load(config_file)
+        
+    nodes = []
+    print('starting nodes')
+
+    for node in config['nodes']:
+        print(f'Node {node["name"]}')
+        node_instance = Node(node)
+        nodes.append(node_instance)
 
     while True:
-        print('Updating Node')
-        node.set_highest_atx(GRPCAPI.get_highest_atx())
-        node.set_version(GRPCAPI.get_version())
-        node.set_build(GRPCAPI.get_build())
-        node.set_node_status(GRPCAPI.get_node_status())
-        node.set_node_info(GRPCAPI.get_node_info())
-        node.set_is_smeshing(GRPCAPI.get_is_smeshing())
-        node.set_smesher_id(GRPCAPI.get_smesher_id())
-        node.set_coinbase(GRPCAPI.get_coinbase())
-        node.set_post_setup_status(GRPCAPI.get_post_setup_status())
-        node.set_post_setup_status_providers(GRPCAPI.get_post_setup_status_providers())
-        node.set_heartbeat(time())
+        node_data = []
+        for node in nodes:
+            print('Updating Node')
+            node.set_highest_atx()
+            node.set_version()
+            node.set_build()
+            node.set_node_status()
+            node.set_node_info()
+            node.set_is_smeshing()
+            node.set_smesher_id()
+            node.set_coinbase()
+            node.set_post_setup_status()
+            node.set_post_setup_status_providers()
+            node.set_heartbeat(time())
         
-        print('Sending Update')
-        print(node.get_node_data())
-        #response = DynamoAPI.send_update(node.get_node_data())
-        # if not response:
-        #     print('Error Updating Dynamo')
-        # break
-        sleep(5)
+            print('Sending Update')
+            node_data.append(node.get_node_data())
+
+        print(node_data)
+        sleep(60)
 
 
 if __name__ == "__main__":

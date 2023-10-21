@@ -1,8 +1,12 @@
 import json
+from api import GRPCAPI
 
 class Node:
-    def __init__(self):
+    def __init__(self, config):
         self.node_data = {
+            "name": config['name'],
+            "public": config['public'],
+            "private": config['private'],
             "highest_atx": None,
             "version": None,
             "build": None,
@@ -27,17 +31,17 @@ class Node:
         }
 
     # Setters
-    def set_highest_atx(self, highest_atx):
-        self.node_data["highest_atx"] = highest_atx
+    def set_highest_atx(self):
+        self.node_data["highest_atx"] = GRPCAPI.get_highest_atx(self.node_data["public"])
 
-    def set_version(self, version):
-        self.node_data["version"] = version
+    def set_version(self):
+        self.node_data["version"] = GRPCAPI.get_version(self.node_data["public"])
 
-    def set_build(self, build):
-        self.node_data["build"] = build
+    def set_build(self):
+        self.node_data["build"] = GRPCAPI.get_build(self.node_data["public"])
 
-    def set_node_status(self, node_status):
-        node_status = node_status
+    def set_node_status(self):
+        node_status = GRPCAPI.get_node_status(self.node_data["public"])
         if node_status:
             self.node_data["connected_peers"] = node_status.get("status", {}).get("connectedPeers", None)
             self.node_data["synced"] = node_status.get("status",  {}).get("isSynced", False)
@@ -48,8 +52,8 @@ class Node:
             #TODO: Handle Error
             pass
 
-    def set_node_info(self, node_info):
-        node_info = node_info
+    def set_node_info(self):
+        node_info = GRPCAPI.get_node_info(self.node_data["public"])
 
         if node_info:
             self.node_data["first_genesis"] = node_info.get("firstGenesis", None)
@@ -59,16 +63,20 @@ class Node:
             #TODO: Handle Error
             pass
 
-    def set_is_smeshing(self, is_smeshing):
+    def set_is_smeshing(self):
+        is_smeshing = GRPCAPI.get_is_smeshing(self.node_data["private"])
         self.node_data["smeshing"] = is_smeshing.get("isSmeshing", False)
 
-    def set_smesher_id(self, smesher_id):
+    def set_smesher_id(self):
+        smesher_id = GRPCAPI.get_smesher_id(self.node_data["private"])
         self.node_data["node_id"] = smesher_id.get("publicKey")
 
-    def set_coinbase(self, coinbase):
+    def set_coinbase(self):
+        coinbase = GRPCAPI.get_coinbase(self.node_data["private"])
         self.node_data["coinbase"] = coinbase.get("accountId",  {}).get("address", None)
 
-    def set_post_setup_status(self, post_setup_status):
+    def set_post_setup_status(self):
+        post_setup_status = GRPCAPI.get_post_setup_status(self.node_data["private"])
         if post_setup_status:
             self.node_data["post_state"] = post_setup_status.get("status",  {}).get("state", None)
             self.node_data["post_data_dir"] = post_setup_status.get("status",  {}).get("opts",  {}).get("dataDir", None)
@@ -85,7 +93,8 @@ class Node:
             #TODO: Handle Error
             pass
 
-    def set_post_setup_status_providers(self, post_setup_status_providers):
+    def set_post_setup_status_providers(self):
+        post_setup_status_providers = GRPCAPI.get_post_setup_status_providers(self.node_data["private"])
         if post_setup_status_providers:
             providers = []
             for provider in post_setup_status_providers["providers"]:

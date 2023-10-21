@@ -1,3 +1,9 @@
 {
-    "go_spacemesh_dir": ""
+    "nodes": [
+        {
+            "public": "localhost:9092",
+            "private": "localhost:9093",
+            "name": "node01"
+        }
+    ]
 }
