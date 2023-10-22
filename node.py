@@ -31,7 +31,8 @@ class Node:
             "available_providers": None,
             "assigned_layers": None,
             "assigned_layers_count": None,
-            "heartbeat": None
+            "heartbeat": None,
+            "current_epoch": None
         }
         self.event_stream = None
     # Setters
@@ -52,6 +53,9 @@ class Node:
             self.node_data["synced_layer"] = node_status.get("status",  {}).get("syncedLayer",  {}).get("number", "0")
             self.node_data["top_layer"] = node_status.get("status",  {}).get("topLayer",  {}).get("number", "0")
             self.node_data["verified_layer"] = node_status.get("status",  {}).get("verifiedLayer",  {}).get("number", "0")
+
+            if self.node_data["synced"]:
+                self.node_data["current_epoch"] = self.node_data["top_layer"] // 4032
         else:
             #TODO: Handle Error
             pass
@@ -120,8 +124,7 @@ class Node:
         
         for event in self.event_stream:
             eligibilities = event.get("eligibilities", None)
-            if eligibilities:
-                print(event)
+            if eligibilities and eligibilities['epoch'] == self.node_data['current_epoch']:
                 self.node_data['assigned_layers'] = eligibilities['eligibilities']
                 for layer in eligibilities['eligibilities']:
                     assigned_layers_count = layer['count'] + assigned_layers_count
