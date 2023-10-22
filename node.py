@@ -116,12 +116,11 @@ class Node:
         if not self.event_stream:
             self.get_event_stream()
         
-        print(self.event_stream)
-
         assigned_layers_count = 0
         
         for event in self.event_stream:
-            event = json.dumps(event)
+            print(event)
+
             eligibilities = event.get("eligibilities", None)
             if eligibilities:
                 self.node_data['assigned_layers'] = eligibilities['eligibilities']
