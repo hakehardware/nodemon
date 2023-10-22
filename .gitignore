@@ -1,6 +1,9 @@
 # Ignore the config.json file
 config.json
 
+# Ignore Test Py
+test.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

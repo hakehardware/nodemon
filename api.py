@@ -1,4 +1,5 @@
 from grpc_lib import ActivationClient, AdminClient, NodeClient, SmesherClient, DebugClient, GlobalStateClient, MeshClient
+import traceback
 
 class GRPCAPI:
     @staticmethod
@@ -89,4 +90,14 @@ class GRPCAPI:
             return smesher_client.get_post_setup_status_providers()
         except Exception as e:
             print(e)
+            return False
+        
+    @staticmethod
+    def get_event_stream(ip):
+        try:
+            admin_client = AdminClient(ip)
+            return admin_client.get_event_stream()
+        except Exception as e:
+            print(e)
+            traceback.print_exc()
             return False

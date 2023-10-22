@@ -4,7 +4,7 @@ Monitors a Spacemesh Node
 
 ### Install Instructions (Ubuntu)
 ```
-git clone git@github.com:hakehardware/nodemon.git
+git clone https://github.com/hakehardware/nodemon.git
 ```
 
 ```
@@ -12,6 +12,8 @@ cd nodemon
 ```
 
 ### Create & Activate Virtual Environment
+Make sure you have python-venv installed
+
 ```
 python3 -m venv .venv
 ```

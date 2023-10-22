@@ -13,7 +13,7 @@ import json
 import time
 import threading
 from google.protobuf.json_format import MessageToDict
-
+import traceback
 
 class ActivationClient(object):
     def __init__(self, ip_address_with_port):
@@ -49,11 +49,12 @@ class AdminClient(object):
         except Exception as e:
             pass
 
-        print(f"Got {len(data)} entries.")
-
+        data = []
         for d in data:
             time.sleep(1)
-            print(json.dumps(d))
+            data.append(json.dumps(d))
+        
+        return data
 
     def get_peer_event_stream(self):
         request = Empty()
@@ -218,6 +219,7 @@ class SmesherClient(object):
                 data.append(MessageToDict(r))
 
         except Exception as e:
+            traceback.print_exc()
             pass
 
         print(f"Got {len(data)} entries.")
@@ -273,6 +275,7 @@ class DebugClient(object):
                 data.append(MessageToDict(r))
 
         except Exception as e:
+            traceback.print_exc()
             pass
 
         print(f"Got {len(data)} entries.")
@@ -329,6 +332,7 @@ class GlobalStateClient(object):
                 data.append(MessageToDict(r))
 
         except Exception as e:
+            traceback.print_exc()
             pass
 
         print(f"Got {len(data)} entries.")
@@ -349,6 +353,7 @@ class GlobalStateClient(object):
                 data.append(MessageToDict(r))
 
         except Exception as e:
+            traceback.print_exc()
             pass
 
         print(f"Got {len(data)} entries.")
@@ -369,13 +374,17 @@ class GlobalStateClient(object):
                 data.append(MessageToDict(r))
 
         except Exception as e:
+            traceback.print_exc()
             pass
 
-        print(f"Got {len(data)} entries.")
+        # print(f"Got {len(data)} entries.")
 
+        response = []
         for d in data:
             time.sleep(1)
-            print(json.dumps(d))
+            response.append(json.dumps(d))
+
+        return response
 
     def global_state_stream(self):
         request = Empty()
@@ -389,6 +398,7 @@ class GlobalStateClient(object):
                 data.append(MessageToDict(r))
 
         except Exception as e:
+            traceback.print_exc()
             pass
 
         print(f"Got {len(data)} entries.")
@@ -464,6 +474,7 @@ class MeshClient(object):
                 data.append(MessageToDict(r))
 
         except Exception as e:
+            traceback.print_exc()
             pass
 
         print(f"Got {len(data)} entries.")
@@ -484,6 +495,7 @@ class MeshClient(object):
                 data.append(MessageToDict(r))
 
         except Exception as e:
+            traceback.print_exc()
             pass
 
         print(f"Got {len(data)} entries.")
@@ -504,6 +516,7 @@ class MeshClient(object):
                 data.append(MessageToDict(r))
 
         except Exception as e:
+            traceback.print_exc()
             pass
 
         print(f"Got {len(data)} entries.")
@@ -530,6 +543,7 @@ class MeshClient(object):
                 data.append(MessageToDict(r))
 
         except Exception as e:
+            traceback.print_exc()
             pass
 
         print(f"Got {len(data)} entries.")

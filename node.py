@@ -29,9 +29,11 @@ class Node:
             "space_units": None,
             "size_gib": None,
             "available_providers": None,
+            "assigned_layers": None,
+            "assigned_layers_count": None,
             "heartbeat": None
         }
-
+        self.event_stream = None
     # Setters
     def set_highest_atx(self):
         self.node_data["highest_atx"] = GRPCAPI.get_highest_atx(self.node_data["public"])
@@ -109,6 +111,26 @@ class Node:
         else:
             #TODO: Handle Error
             pass
+
+    def set_assigned_layers(self):
+        if not self.event_stream:
+            self.get_event_stream()
+
+        assigned_layers_count = 0
+        
+        for event in self.event_stream:
+            eligibilities = event.get("eligibilities", None)
+            if eligibilities:
+                self.node_data['assigned_layers'] = eligibilities
+                for layer in eligibilities:
+                    assigned_layers_count = layer['count'] + assigned_layers_count
+            else:
+                self.node_data['assigned_layers'] = "0"
+
+        self.node_data['assigned_layers_count']
+
+    def get_event_stream(self):
+        self.event_stream = GRPCAPI.get_event_stream(self.node_data["private"])
 
     def set_heartbeat(self, heartbeat):
         self.node_data["heartbeat"] = heartbeat

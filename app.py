@@ -7,7 +7,7 @@ import json
 from node import Node
 from time import sleep,time
 
-HEADERS = ["Name", "Version", "IP", "Peers", "Synced", "Top Layer", "Verified Layer", "Synced Layer", "Smeshing", "PoST State", "Space Units", "GiB"]
+HEADERS = ["Name", "Version", "IP", "Peers", "Synced", "Top", "Verified", "Synced", "Smeshing", "PoST State", "Space Units", "GiB", "Layers"]
 
 class TableApp(App):
     def compose(self) -> ComposeResult:
@@ -37,8 +37,9 @@ class TableApp(App):
 
 
         while True:
-            node_data = []
-            for node in nodes:
+            table = self.query_one(DataTable)
+
+            for index, node in enumerate(nodes):
                 print('Updating Node')
                 node.set_highest_atx()
                 node.set_version()
@@ -50,29 +51,29 @@ class TableApp(App):
                 node.set_coinbase()
                 node.set_post_setup_status()
                 node.set_post_setup_status_providers()
+                node.set_assigned_layers()
                 node.set_heartbeat(time())
-                node_data.append(node.get_node_data())
+                node_data = node.get_node_data()
 
 
-            table = self.query_one(DataTable)
-            for index, data in enumerate(node_data):
                 #HEADERS = ["Name", "Version", "IP", "Peers", "Synced", "Top Layer", "Verified Layer", "Synced Layer", "Smeshing", "PoST State", "Space Units", "GiB"]
 
                 if not table.is_valid_row_index(index):
-                    table.add_row(data['name'], data['version'], data['host'], data['connected_peers'], str(data['synced']), str(data['top_layer']), str(data['verified_layer']), str(data['synced_layer']), str(data['smeshing']), str(data['post_state']), str(data['space_units']), str(data['size_gib']), key=str(index))
+                    table.add_row(node_data['name'], node_data['version'], node_data['host'], node_data['connected_peers'], str(node_data['synced']), str(node_data['top_layer']), str(node_data['verified_layer']), str(node_data['synced_layer']), str(node_data['smeshing']), str(node_data['post_state']), str(node_data['space_units']), str(node_data['size_gib']), str(node_data['assigned_layers_count']), key=str(index))
                 else:
-                    table.update_cell(str(index), "0", str(data['name']))
-                    table.update_cell(str(index), "1", str(data['version']))
-                    table.update_cell(str(index), "2", str(data['host']))
-                    table.update_cell(str(index), "3", str(data['connected_peers']))
-                    table.update_cell(str(index), "4", str(data['synced']))
-                    table.update_cell(str(index), "5", str(data['top_layer']))
-                    table.update_cell(str(index), "6", str(data['verified_layer']))
-                    table.update_cell(str(index), "7", str(data['synced_layer']))
-                    table.update_cell(str(index), "8", str(data['smeshing']))
-                    table.update_cell(str(index), "9", str(data['post_state']))
-                    table.update_cell(str(index), "10", str(data['space_units']))
-                    table.update_cell(str(index), "11", str(data['size_gib']))
+                    table.update_cell(str(index), "0", str(node_data['name']))
+                    table.update_cell(str(index), "1", str(node_data['version']))
+                    table.update_cell(str(index), "2", str(node_data['host']))
+                    table.update_cell(str(index), "3", str(node_data['connected_peers']))
+                    table.update_cell(str(index), "4", str(node_data['synced']))
+                    table.update_cell(str(index), "5", str(node_data['top_layer']))
+                    table.update_cell(str(index), "6", str(node_data['verified_layer']))
+                    table.update_cell(str(index), "7", str(node_data['synced_layer']))
+                    table.update_cell(str(index), "8", str(node_data['smeshing']))
+                    table.update_cell(str(index), "9", str(node_data['post_state']))
+                    table.update_cell(str(index), "10", str(node_data['space_units']))
+                    table.update_cell(str(index), "11", str(node_data['size_gib']))
+                    table.update_cell(str(index), "12", str(node_data['assigned_layers_count']))
 
             sleep(5)
 
