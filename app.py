@@ -42,7 +42,7 @@ class TableApp(App):
             threads = []
 
             for node in nodes:
-                thread = threading.Thread(target=node.load_all_data())
+                thread = threading.Thread(target=node.load_all_data)
                 thread.start()
                 threads.append(thread)
 
