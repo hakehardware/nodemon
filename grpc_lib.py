@@ -32,7 +32,7 @@ class AdminClient(object):
         self.streams = None
 
     def _cancel_stream(self):
-        time.sleep(15)
+        time.sleep(5)
         self.streams.cancel()
 
     def get_event_stream(self):
@@ -48,11 +48,6 @@ class AdminClient(object):
 
         except Exception as e:
             pass
-
-        # response = []
-        # for d in data:
-        #     time.sleep(1)
-        #     data.append(json.dumps(d))
         
         return data
 

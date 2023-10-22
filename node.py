@@ -1,5 +1,7 @@
 import json
 from api import GRPCAPI
+import concurrent.futures
+from time import time
 
 class Node:
     def __init__(self, config):
@@ -142,3 +144,18 @@ class Node:
     
     def print_node_data(self):
         print(json.dumps(self.node_data))
+
+    def load_all_data(self):
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            executor.submit(self.set_highest_atx())
+            executor.submit(self.set_version())
+            executor.submit(self.set_build())
+            executor.submit(self.set_node_status())
+            executor.submit(self.set_node_info())
+            executor.submit(self.set_is_smeshing())
+            executor.submit(self.set_smesher_id())
+            executor.submit(self.set_coinbase())
+            executor.submit(self.set_post_setup_status())
+            executor.submit(self.set_post_setup_status_providers())
+            executor.submit(self.set_assigned_layers())
+            executor.submit(self.set_heartbeat(time()))

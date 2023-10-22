@@ -40,19 +40,7 @@ class TableApp(App):
             table = self.query_one(DataTable)
 
             for index, node in enumerate(nodes):
-                print('Updating Node')
-                node.set_highest_atx()
-                node.set_version()
-                node.set_build()
-                node.set_node_status()
-                node.set_node_info()
-                node.set_is_smeshing()
-                node.set_smesher_id()
-                node.set_coinbase()
-                node.set_post_setup_status()
-                node.set_post_setup_status_providers()
-                node.set_assigned_layers()
-                node.set_heartbeat(time())
+                node.load_all_data()
                 node_data = node.get_node_data()
 
 
