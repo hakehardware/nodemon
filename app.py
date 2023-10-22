@@ -6,6 +6,7 @@ from textual import work
 import json
 from node import Node
 from time import sleep,time
+import threading
 
 HEADERS = ["Name", "Version", "IP", "Peers", "Synced", "Top", "Verified", "Synced", "Smeshing", "PoST State", "Space Units", "GiB", "Layers"]
 
@@ -38,13 +39,20 @@ class TableApp(App):
 
         while True:
             table = self.query_one(DataTable)
+            threads = []
+
+            for node in nodes:
+                thread = threading.Thread(target=node.load_all_data())
+                thread.start()
+                threads.append(thread)
+
+            for thread in threads:
+                thread.join()
+
 
             for index, node in enumerate(nodes):
-                node.load_all_data()
-                node_data = node.get_node_data()
-
-
                 #HEADERS = ["Name", "Version", "IP", "Peers", "Synced", "Top Layer", "Verified Layer", "Synced Layer", "Smeshing", "PoST State", "Space Units", "GiB"]
+                node_data = node.get_node_data()
 
                 if not table.is_valid_row_index(index):
                     table.add_row(node_data['name'], node_data['version'], node_data['host'], node_data['connected_peers'], str(node_data['synced']), str(node_data['top_layer']), str(node_data['verified_layer']), str(node_data['synced_layer']), str(node_data['smeshing']), str(node_data['post_state']), str(node_data['space_units']), str(node_data['size_gib']), str(node_data['assigned_layers_count']), key=str(index))
@@ -63,7 +71,7 @@ class TableApp(App):
                     table.update_cell(str(index), "11", str(node_data['size_gib']))
                     table.update_cell(str(index), "12", str(node_data['assigned_layers_count']))
 
-            sleep(5)
+            sleep(30)
 
 
 app = TableApp()
