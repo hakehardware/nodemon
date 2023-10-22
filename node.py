@@ -1,6 +1,5 @@
 import json
 from api import GRPCAPI
-import concurrent.futures
 from time import time
 
 class Node:

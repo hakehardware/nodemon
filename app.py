@@ -1,42 +1,49 @@
-from itertools import cycle
-import asyncio
 from textual.app import App, ComposeResult
-from textual.widgets import DataTable, Label, LoadingIndicator, Static
+from textual.widgets import DataTable, LoadingIndicator, Static, Footer, Header
 from textual.containers import Container
 from textual import work
+from textual.binding import Binding
+
 import json
 from node import Node
-from time import sleep,time
+from time import sleep
 import threading
-from textual.binding import Binding
+
 
 HEADERS = ["Name", "Version", "IP", "Peers", "Synced", "Top", "Verified", "Synced", "Smeshing", "PoST State", "Space Units", "GiB", "Layers"]
 
-class TableApp(App):
+class Nodemon(App):
+
     BINDINGS = [
         Binding("q", "app.quit", "Quit", show=True),
     ]
     CSS_PATH = "nodemon.tcss"
+
     def compose(self) -> ComposeResult:
+        yield Header(show_clock=True)
         yield DataTable(classes='-hidden')
         with Container(id='loading-cont'):
-            yield Static('Loading Node Data', id='loading-message')
+            yield Static('Loading Node Data (this can take a while)', id='loading-message')
             yield LoadingIndicator(id="loading-indicator", name="Loading Node Data")
+        yield Footer()
 
     def on_mount(self) -> None:
         table = self.query_one(DataTable)
         table.cursor_type = "row"
         table.zebra_stripes = True
 
+        # Add headers to table
         for index, header in enumerate(HEADERS):
             table.add_column(header, key=str(index))
 
-        table.zebra_stripes = True
+        # Start worker
         self.update_node_data()
 
 
+    # This will update the table
     @work(thread=True)
     def update_node_data(self) -> None:
+
         with open('config.json', 'r') as config_file:
             config = json.load(config_file)
 
@@ -45,13 +52,11 @@ class TableApp(App):
             node_instance = Node(node)
             nodes.append(node_instance)
 
-
         while True:
             table = self.query_one(DataTable)
-           
-
             threads = []
 
+            # Each node is run as a thread
             for node in nodes:
                 thread = threading.Thread(target=node.load_all_data)
                 thread.start()
@@ -59,12 +64,13 @@ class TableApp(App):
 
             for thread in threads:
                 thread.join()
-                
+
+            # Hide the loading container once data has been loaded
             self.query_one("#loading-cont").add_class("-hidden")
             table.remove_class("-hidden")
             
+            # For each node add a row
             for index, node in enumerate(nodes):
-                #HEADERS = ["Name", "Version", "IP", "Peers", "Synced", "Top Layer", "Verified Layer", "Synced Layer", "Smeshing", "PoST State", "Space Units", "GiB"]
                 node_data = node.get_node_data()
 
                 if not table.is_valid_row_index(index):
@@ -84,9 +90,8 @@ class TableApp(App):
                     table.update_cell(str(index), "11", str(node_data['size_gib']))
                     table.update_cell(str(index), "12", str(node_data['assigned_layers_count']))
 
-            sleep(30)
+            sleep(120)
 
-
-app = TableApp()
+app = Nodemon()
 if __name__ == "__main__":
     app.run()
