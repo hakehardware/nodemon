@@ -125,8 +125,6 @@ class Node:
                 self.node_data['assigned_layers'] = eligibilities['eligibilities']
                 for layer in eligibilities['eligibilities']:
                     assigned_layers_count = layer['count'] + assigned_layers_count
-            else:
-                self.node_data['assigned_layers'] = "0"
 
         self.node_data['assigned_layers_count'] = assigned_layers_count
 
