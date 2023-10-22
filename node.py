@@ -119,10 +119,9 @@ class Node:
         assigned_layers_count = 0
         
         for event in self.event_stream:
-            print(event)
-
             eligibilities = event.get("eligibilities", None)
             if eligibilities:
+                print(event)
                 self.node_data['assigned_layers'] = eligibilities['eligibilities']
                 for layer in eligibilities['eligibilities']:
                     assigned_layers_count = layer['count'] + assigned_layers_count
