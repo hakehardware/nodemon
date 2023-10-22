@@ -115,6 +115,8 @@ class Node:
     def set_assigned_layers(self):
         if not self.event_stream:
             self.get_event_stream()
+        
+        print(self.event_stream)
 
         assigned_layers_count = 0
         
