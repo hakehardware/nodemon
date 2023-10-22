@@ -128,7 +128,7 @@ class Node:
             else:
                 self.node_data['assigned_layers'] = "0"
 
-        self.node_data['assigned_layers_count']
+        self.node_data['assigned_layers_count'] = assigned_layers_count
 
     def get_event_stream(self):
         self.event_stream = GRPCAPI.get_event_stream(self.node_data["private"])
