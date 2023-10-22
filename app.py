@@ -1,18 +1,27 @@
 from itertools import cycle
 import asyncio
 from textual.app import App, ComposeResult
-from textual.widgets import DataTable
+from textual.widgets import DataTable, Label, LoadingIndicator, Static
+from textual.containers import Container
 from textual import work
 import json
 from node import Node
 from time import sleep,time
 import threading
+from textual.binding import Binding
 
 HEADERS = ["Name", "Version", "IP", "Peers", "Synced", "Top", "Verified", "Synced", "Smeshing", "PoST State", "Space Units", "GiB", "Layers"]
 
 class TableApp(App):
+    BINDINGS = [
+        Binding("q", "app.quit", "Quit", show=True),
+    ]
+    CSS_PATH = "nodemon.tcss"
     def compose(self) -> ComposeResult:
-        yield DataTable()
+        yield DataTable(classes='-hidden')
+        with Container(id='loading-cont'):
+            yield Static('Loading Node Data', id='loading-message')
+            yield LoadingIndicator(id="loading-indicator", name="Loading Node Data")
 
     def on_mount(self) -> None:
         table = self.query_one(DataTable)
@@ -39,6 +48,8 @@ class TableApp(App):
 
         while True:
             table = self.query_one(DataTable)
+           
+
             threads = []
 
             for node in nodes:
@@ -48,8 +59,10 @@ class TableApp(App):
 
             for thread in threads:
                 thread.join()
-
-
+                
+            self.query_one("#loading-cont").add_class("-hidden")
+            table.remove_class("-hidden")
+            
             for index, node in enumerate(nodes):
                 #HEADERS = ["Name", "Version", "IP", "Peers", "Synced", "Top Layer", "Verified Layer", "Synced Layer", "Smeshing", "PoST State", "Space Units", "GiB"]
                 node_data = node.get_node_data()

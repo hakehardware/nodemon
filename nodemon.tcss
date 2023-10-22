@@ -1,0 +1,24 @@
+DataTable.-hidden {
+    display: none;
+}
+
+#loading.-hidden {
+    display: none;
+}
+
+#loading-cont {
+    align-vertical: middle;
+    height: 90%;
+}
+
+#loading-cont.-hidden {
+    display: none;
+}
+
+LoadingIndicator {
+    height: auto;
+}
+
+#loading-message {
+    text-align: center;
+}
