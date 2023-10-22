@@ -121,6 +121,7 @@ class Node:
         assigned_layers_count = 0
         
         for event in self.event_stream:
+            event = json.dumps(event)
             eligibilities = event.get("eligibilities", None)
             if eligibilities:
                 self.node_data['assigned_layers'] = eligibilities['eligibilities']
