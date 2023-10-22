@@ -44,15 +44,15 @@ class AdminClient(object):
         data = []
         try:
             for r in self.streams:
-                data.append(MessageToDict(r))
+                data.append(json.dumps(MessageToDict(r)))
 
         except Exception as e:
             pass
 
-        data = []
-        for d in data:
-            time.sleep(1)
-            data.append(json.dumps(d))
+        # response = []
+        # for d in data:
+        #     time.sleep(1)
+        #     data.append(json.dumps(d))
         
         return data
 
