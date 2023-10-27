@@ -1,4 +1,4 @@
-# NodeMon
+# Nodemon
 Monitors a Spacemesh Node
 
 

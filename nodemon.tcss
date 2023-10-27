@@ -2,9 +2,9 @@ DataTable.-hidden {
     display: none;
 }
 
-#loading.-hidden {
-    display: none;
-}
+# #loading.-hidden {
+#     display: none;
+# }
 
 #loading-cont {
     align-vertical: middle;
@@ -21,4 +21,29 @@ LoadingIndicator {
 
 #loading-message {
     text-align: center;
+}
+
+#node-data.-hidden {
+    display: none;
+}
+
+Button {
+    text-style: none;
+}
+
+#back-to-main {
+    margin: 1 1;
+    padding: 0;
+}
+
+#node-pane.-hidden {
+    display: none;
+}
+
+#node-table.-hidden {
+    display: none;
+}
+
+#test-hidden {
+    display: none;
 }
