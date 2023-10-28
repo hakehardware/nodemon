@@ -115,21 +115,35 @@ class Nodemon(App):
                 self.node_data.append(node_data)
 
                 if not table.is_valid_row_index(index):
-                    table.add_row(node_data['name'], node_data['version'], node_data['host'], node_data['connected_peers'], str(node_data['synced']), str(node_data['top_layer']), str(node_data['verified_layer']), str(node_data['synced_layer']), str(node_data['smeshing']), str(node_data['post_state']), str(node_data['space_units']), str(node_data['size_gib']), str(node_data['assigned_layers_count']), key=str(index))
+                    self.call_from_thread(table.add_row, *[
+                        node_data['name'], 
+                        node_data['version'], 
+                        node_data['host'], 
+                        node_data['connected_peers'], 
+                        str(node_data['synced']), 
+                        str(node_data['top_layer']), 
+                        str(node_data['verified_layer']), 
+                        str(node_data['synced_layer']), 
+                        str(node_data['smeshing']), 
+                        str(node_data['post_state']), 
+                        str(node_data['space_units']), 
+                        str(node_data['size_gib']), 
+                        str(node_data['assigned_layers_count'])
+                        ], key=str(index))
                 else:
-                    table.update_cell(str(index), "0", str(node_data['name']))
-                    table.update_cell(str(index), "1", str(node_data['version']))
-                    table.update_cell(str(index), "2", str(node_data['host']))
-                    table.update_cell(str(index), "3", str(node_data['connected_peers']))
-                    table.update_cell(str(index), "4", str(node_data['synced']))
-                    table.update_cell(str(index), "5", str(node_data['top_layer']))
-                    table.update_cell(str(index), "6", str(node_data['verified_layer']))
-                    table.update_cell(str(index), "7", str(node_data['synced_layer']))
-                    table.update_cell(str(index), "8", str(node_data['smeshing']))
-                    table.update_cell(str(index), "9", str(node_data['post_state']))
-                    table.update_cell(str(index), "10", str(node_data['space_units']))
-                    table.update_cell(str(index), "11", str(node_data['size_gib']))
-                    table.update_cell(str(index), "12", str(node_data['assigned_layers_count']))
+                    self.call_from_thread(table.update_cell, str(index), "0", str(node_data['name']))
+                    self.call_from_thread(table.update_cell, str(index), "1", str(node_data['version']))
+                    self.call_from_thread(table.update_cell, str(index), "2", str(node_data['host']))
+                    self.call_from_thread(table.update_cell, str(index), "3", str(node_data['connected_peers']))
+                    self.call_from_thread(table.update_cell, str(index), "4", str(node_data['synced']))
+                    self.call_from_thread(table.update_cell, str(index), "5", str(node_data['top_layer']))
+                    self.call_from_thread(table.update_cell, str(index), "6", str(node_data['verified_layer']))
+                    self.call_from_thread(table.update_cell, str(index), "7", str(node_data['synced_layer']))
+                    self.call_from_thread(table.update_cell, str(index), "8", str(node_data['smeshing']))
+                    self.call_from_thread(table.update_cell, str(index), "9", str(node_data['post_state']))
+                    self.call_from_thread(table.update_cell, str(index), "10", str(node_data['space_units']))
+                    self.call_from_thread(table.update_cell, str(index), "11", str(node_data['size_gib']))
+                    self.call_from_thread(table.update_cell, str(index), "12", str(node_data['assigned_layers_count']))
 
             sleep(60)
 
@@ -149,10 +163,10 @@ class Nodemon(App):
         self.query_one('#node-data-smeshing').update(f"{self.selected_node['post_state']} | {self.selected_node['size_gib']} GiB ({self.selected_node['space_units']} SU) | {self.selected_node['assigned_layers_count']} Layers")
         self.query_one('#node-data-layers').update(f"[b]Layers:[/b] {'None' if not self.selected_node['assigned_layers'] else ', '.join(map(str, self.selected_node['assigned_layers']))}")
 
-    @on(Button.Pressed, '#btn-copy-layers')
-    def on_copy(self):
-        pyperclip.copy('None' if not self.selected_node['assigned_layers'] else ', '.join(map(str, self.selected_node['assigned_layers'])))
-        self.query_one(Button).label = "COPIED"
+    # @on(Button.Pressed, '#btn-copy-layers')
+    # def on_copy(self):
+    #     pyperclip.copy('None' if not self.selected_node['assigned_layers'] else ', '.join(map(str, self.selected_node['assigned_layers'])))
+    #     self.query_one(Button).label = "COPIED"
 
 if __name__ == "__main__":
     with open('config.json', 'r') as config_file:
