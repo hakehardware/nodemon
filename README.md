@@ -35,3 +35,8 @@ cp example.config.json config.json
 
 ### Update the Config
 For every node that you have, add a new entry. The name can be whatever you want. Public should be the IP and port for the public endpoints for grpc. Private should be the IP and port for the private endpoints for grpc.
+
+### Run Nodemon
+```
+python3 app.py
+```
