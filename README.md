@@ -40,3 +40,8 @@ For every node that you have, add a new entry. The name can be whatever you want
 ```
 python3 app.py
 ```
+## Update to Latest
+If you want to update to the latest version, you can do so with git
+```
+git pull
+```
