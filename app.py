@@ -147,7 +147,7 @@ class Nodemon(App):
         self.query_one('#node-data-smesher-id').update(f"[b]Smesher ID:[/b] {node['node_id']}")
         self.query_one('#node-data-network').update(f"{node['host']} | {node['connected_peers']} Peers | {'Synced' if node['synced'] else 'Not Synced'} | T {node['top_layer']} | S {node['synced_layer']} | V {node['verified_layer']}")
         self.query_one('#node-data-smeshing').update(f"{node['post_state']} | {node['size_gib']} GiB ({node['space_units']} SU) | {node['assigned_layers_count']} Layers")
-        self.query_one('#node-data-layers').update(f"[b]Layers:[/b] {', '.join(node['assigned_layers'])}")
+        self.query_one('#node-data-layers').update(f"[b]Layers:[/b] {', '.join(map(str, node['assigned_layers']))}")
 
 
 if __name__ == "__main__":
