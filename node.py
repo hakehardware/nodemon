@@ -127,7 +127,6 @@ class Node:
         for event in self.event_stream:
             eligibilities = event.get("eligibilities", None)
             if eligibilities and eligibilities['epoch'] == self.node_data['current_epoch']:
-                self.node_data['assigned_layers'] = eligibilities['eligibilities']
                 for layer in eligibilities['eligibilities']:
                     assigned_layers_count = layer['count'] + assigned_layers_count
 
