@@ -6,22 +6,11 @@ DataTable.-hidden {
 #     display: none;
 # }
 
-#loading-cont {
-    align-vertical: middle;
-    height: 90%;
-}
 
-#loading-cont.-hidden {
-    display: none;
-}
 
-LoadingIndicator {
-    height: auto;
-}
 
-#loading-message {
-    text-align: center;
-}
+
+
 
 #node-data.-hidden {
     display: none;
@@ -46,4 +35,63 @@ Button {
 
 #test-hidden {
     display: none;
+}
+
+
+
+
+
+NodeTable.-hidden {
+    display: none;
+}
+
+NodeData.-hidden {
+    display: none;
+}
+
+NodeLoading.-hidden {
+    display: none;
+}
+
+#node-container.-hidden {
+    display: none;
+}
+
+# Loading Bar
+#node-loading {
+    align-vertical: middle;
+    height: 90%;
+}
+
+LoadingIndicator {
+    height: auto;
+}
+
+#loading-message {
+    text-align: center;
+}
+
+# Top Level Node Data Grid
+NodeData {
+    layout: grid;
+    grid-size: 2 1;
+    grid-columns: 1fr 3fr;
+}
+
+.box {
+    height: 100%;
+    border: solid green;
+}
+
+
+# Node Info Grid
+#node-data-info {
+    layout: grid;
+    grid-size: 1 5;
+    padding: 1
+}
+
+.light-background {
+    background: black 30%;
+    padding: 1;
 }
