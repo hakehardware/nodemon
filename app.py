@@ -1,38 +1,21 @@
 from textual.app import App, ComposeResult
-from textual.widgets import DataTable, LoadingIndicator, Static, Footer, Header, Button
+from textual.widgets import Header, Footer, DataTable, Static, Label, LoadingIndicator, Button
 from textual.containers import Container
-from textual import work
 from textual.binding import Binding
+from textual import work
 from textual import on
-import asyncio
 
 import json
-from node import Node
 from time import sleep
+from node import Node
 import threading
 
 
-HEADERS = ["Name", "Version", "IP", "Peers", "Synced", "Top", "Verified", "Synced", "Smeshing", "PoST State", "Space Units", "GiB", "Layers"]
+HEADERS = ["Name", "Version", "IP", "Peers", "Synced", "Top", "Verified", "Synced", "Smeshing", "PoST State", "SU", "GiB", "Layers"]
 
-
-
-# This pane shows information about just one node
-class NodePane(Container):
-    BINDINGS = [
-        Binding("b", "back_to_main()", "Back", show=True)
-    ]
-
-    def compose(self) -> ComposeResult:
-        yield Static("Node Pane")
-        yield Static("Back Pressed", id='test-hidden')
-
-    def action_back_to_main(self):
-        self.query_one('#test-hidden').remove_class('test-hidden')
-
-# Pane with the table for all nodes
 class NodeTable(Container):
     def compose(self) -> ComposeResult:
-        yield DataTable(classes='-hidden')
+        yield DataTable()
 
     def on_mount(self) -> None:
         table = self.query_one(DataTable)
@@ -43,71 +26,75 @@ class NodeTable(Container):
         for index, header in enumerate(HEADERS):
             table.add_column(header, key=str(index))
 
+
+
+class NodeData(Container):
+    def compose(self) -> ComposeResult:
+        with Container(classes='box', id='node-data-logs'):
+            yield Static("Logs (coming soon)")
+        with Container(classes='box', id='node-data-info'):
+            yield Label("Loading...", classes='light-background', id='node-data-smesher-id')
+            yield Label("Loading...", classes='light-background', id='node-data-network')
+            yield Label("Loading...", classes='light-background', id='node-data-smeshing')
+            yield Label("Loading...", classes='light-background', id='node-data-layers')
+            yield Button("Copy Layers", disabled=True)
+
+
+
+class NodeLoading(Container):
+    def compose(self) -> ComposeResult:
+        yield Static('🥔  Harvesting Potatoes (please wait) 🥔', id='loading-message')
+        yield LoadingIndicator(id="loading-indicator", name="Loading Node Data")
+
+
 class Nodemon(App):
-    def __init__(self, config) -> None:
-        self.node_data = []
-        self.config = config
-        super().__init__()
 
     BINDINGS = [
         Binding("h", "home()", "Home", show=True),
         Binding("q", "app.quit", "Quit", show=True)
     ]
-
     CSS_PATH = "nodemon.tcss"
+
+    def __init__(self, config) -> None:
+        self.node_data = []
+        self.config = config
+        self.is_loading = True
+        self.first_load = True
+        super().__init__()
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
 
-        yield NodeTable(id='node-table')
+        with Container(id='node-container', classes='-hidden'):
+            yield NodeTable(id='node-table')
+            yield NodeData(id='node-data', classes='-hidden')
 
-        yield NodePane(id='node-pane', classes='-hidden')
-
-        with Container(id='loading-cont'):
-            yield Static('Loading Node Data (this can take a while)', id='loading-message')
-            yield LoadingIndicator(id="loading-indicator", name="Loading Node Data")
-        # with Container(classes='-hidden', id='node-data'):
-
-        #     #yield Button("<<", id='back-to-main')
-        #     yield Static("Loading", id='node-name')
+        yield NodeLoading(id='node-loading')
         yield Footer()
 
     def on_mount(self) -> None:
-        # Start worker
-        self.update_node_data()
+        self.node_worker()
 
-    @on(DataTable.RowSelected)
-    def show_node(self, event):
-        self.query_one(DataTable).add_class("-hidden")
-        message = self.query_one(NodePane)
-        message.remove_class("-hidden")
-        message.focus()
-        
-    #     index = event.data_table.get_row_index(event.row_key)
-    #     self.query_one('#node-name').update(self.node_data[index]['name'])
+    def action_home(self):
+        if not self.is_loading:
+            self.query_one(NodeData).add_class('-hidden')
+            self.query_one(NodeTable).remove_class('-hidden')
+            self.query_one(DataTable).focus()
+            self.title = "Nodemon"
 
-    # # @on(Button.Pressed, '#back-to-main')
-    # def action_back_to_main(self):
-    #     self.query_one(DataTable).remove_class("-hidden")
-    #     self.query_one('#node-data').add_class("-hidden")
-
-    # This will update the table
     @work(thread=True)
-    def update_node_data(self) -> None:
+    def node_worker(self):
+
+        table = self.query_one(DataTable)
 
         nodes = []
-        for node in config['nodes']:
+        for node in self.config['nodes']:
             node_instance = Node(node)
             nodes.append(node_instance)
 
         while True:
-            table = self.query_one(DataTable)
             threads = []
 
-            # Reset the Node Data
-            self.node_data = []
-
-            # Each node is run as a thread
             for node in nodes:
                 thread = threading.Thread(target=node.load_all_data)
                 thread.start()
@@ -116,10 +103,11 @@ class Nodemon(App):
             for thread in threads:
                 thread.join()
 
-            # Hide the loading container once data has been loaded
-            self.query_one("#loading-cont").add_class("-hidden")
-            table.remove_class("-hidden")
-            
+            if self.first_load:
+                self.query_one(NodeLoading).add_class('-hidden')
+                self.query_one('#node-container').remove_class('-hidden')
+                self.is_loading = False
+
             # For each node add a row
             for index, node in enumerate(nodes):
                 node_data = node.get_node_data()
@@ -145,9 +133,24 @@ class Nodemon(App):
 
             sleep(60)
 
+    # Displays data about the node that was selected
+    @on(DataTable.RowSelected)
+    def show_node_data(self, event):
+        self.query_one(NodeTable).add_class('-hidden')
+        self.query_one(NodeData).remove_class('-hidden')
+        index = event.data_table.get_row_index(event.row_key)
+        
+        node = self.node_data[index]
+        name = f"{node['name']} ({node['version']})"
+        self.title = f"Nodemon > {name}"
+
+        self.query_one('#node-data-smesher-id').update(f"[b]Smesher ID:[/b] {node['node_id']}")
+        self.query_one('#node-data-network').update(f"{node['host']} | {node['connected_peers']} Peers | {'Synced' if node['synced'] else 'Not Synced'} | T {node['top_layer']} | S {node['synced_layer']} | V {node['verified_layer']}")
+        self.query_one('#node-data-smeshing').update(f"{node['post_state']} | {node['size_gib']} GiB ({node['space_units']} SU) | {node['assigned_layers_count']} Layers")
+        self.query_one('#node-data-layers').update(f"[b]Layers:[/b] {node['assigned_layers']}")
+
 
 if __name__ == "__main__":
     with open('config.json', 'r') as config_file:
         config = json.load(config_file)
-    app = Nodemon(config)
-    app.run()
+    Nodemon(config).run()

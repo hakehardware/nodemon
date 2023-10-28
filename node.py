@@ -140,7 +140,7 @@ class Node:
         for event in self.event_stream:
             eligibilities = event.get("eligibilities", None)
             if eligibilities and eligibilities['epoch'] == self.node_data['current_epoch']:
-                self.set_assigned_layers = [item['layer'] for item in eligibilities['eligibilities'] for _ in range(item['count'])]
+                self.node_data['assigned_layers'] = [item['layer'] for item in eligibilities['eligibilities'] for _ in range(item['count'])]
 
     def get_event_stream(self):
         self.event_stream = GRPCAPI.get_event_stream(self.node_data["private"])
