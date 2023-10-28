@@ -1,5 +1,5 @@
 from textual.app import App, ComposeResult
-from textual.widgets import Header, Footer, DataTable, Static, Label, LoadingIndicator, Button
+from textual.widgets import Header, Footer, DataTable, Static, Label, LoadingIndicator, Button, Log
 from textual.containers import Container
 from textual.binding import Binding
 from textual import work
@@ -9,7 +9,7 @@ import json
 from time import sleep
 from node import Node
 import threading
-
+import pyperclip
 
 HEADERS = ["Name", "Version", "IP", "Peers", "Synced", "Top", "Verified", "Synced", "Smeshing", "PoST State", "SU", "GiB", "Layers"]
 
@@ -33,11 +33,11 @@ class NodeData(Container):
         with Container(classes='box', id='node-data-logs'):
             yield Static("Logs (coming soon)")
         with Container(classes='box', id='node-data-info'):
-            yield Label("Loading...", classes='light-background', id='node-data-smesher-id')
-            yield Label("Loading...", classes='light-background', id='node-data-network')
-            yield Label("Loading...", classes='light-background', id='node-data-smeshing')
-            yield Label("Loading...", classes='light-background', id='node-data-layers')
-            yield Button("Copy Layers", disabled=True)
+            yield Static("Loading...", classes='light-background', id='node-data-smesher-id')
+            yield Static("Loading...", classes='light-background', id='node-data-network')
+            yield Static("Loading...", classes='light-background', id='node-data-smeshing')
+            yield Static("Loading...", classes='light-background', id='node-data-layers')
+            yield Button("Copy Layers", id='btn-copy-layers')
 
 
 
@@ -60,6 +60,7 @@ class Nodemon(App):
         self.config = config
         self.is_loading = True
         self.first_load = True
+        self.selected_node = None
         super().__init__()
 
     def compose(self) -> ComposeResult:
@@ -140,15 +141,19 @@ class Nodemon(App):
         self.query_one(NodeData).remove_class('-hidden')
         index = event.data_table.get_row_index(event.row_key)
         
-        node = self.node_data[index]
-        name = f"{node['name']} ({node['version']})"
+        self.selected_node = self.node_data[index]
+        name = f"{self.selected_node['name']} ({self.selected_node['version']})"
         self.title = f"Nodemon > {name}"
 
-        self.query_one('#node-data-smesher-id').update(f"[b]Smesher ID:[/b] {node['node_id']}")
-        self.query_one('#node-data-network').update(f"{node['host']} | {node['connected_peers']} Peers | {'Synced' if node['synced'] else 'Not Synced'} | T {node['top_layer']} | S {node['synced_layer']} | V {node['verified_layer']}")
-        self.query_one('#node-data-smeshing').update(f"{node['post_state']} | {node['size_gib']} GiB ({node['space_units']} SU) | {node['assigned_layers_count']} Layers")
-        self.query_one('#node-data-layers').update(f"[b]Layers:[/b] {', '.join(map(str, node['assigned_layers']))}")
+        self.query_one('#node-data-smesher-id').update(f"[b]Smesher ID:[/b] {self.selected_node['node_id']}")
+        self.query_one('#node-data-network').update(f"{self.selected_node['host']} | {self.selected_node['connected_peers']} Peers | {'Synced' if self.selected_node['synced'] else 'Not Synced'} | T {self.selected_node['top_layer']} | S {self.selected_node['synced_layer']} | V {self.selected_node['verified_layer']}")
+        self.query_one('#node-data-smeshing').update(f"{self.selected_node['post_state']} | {self.selected_node['size_gib']} GiB ({self.selected_node['space_units']} SU) | {self.selected_node['assigned_layers_count']} Layers")
+        self.query_one('#node-data-layers').update(f"[b]Layers:[/b] {'None' if not self.selected_node['assigned_layers'] else ', '.join(map(str, self.selected_node['assigned_layers']))}")
 
+    @on(Button.Pressed, '#btn-copy-layers')
+    def on_copy(self):
+        pyperclip.copy('None' if not self.selected_node['assigned_layers'] else ', '.join(map(str, self.selected_node['assigned_layers'])))
+        self.query_one(Button).label = "COPIED"
 
 if __name__ == "__main__":
     with open('config.json', 'r') as config_file:
