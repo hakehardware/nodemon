@@ -148,7 +148,7 @@ class Nodemon(App):
         self.query_one('#node-data-smesher-id').update(f"[b]Smesher ID:[/b] {self.selected_node['node_id']}")
         self.query_one('#node-data-network').update(f"{self.selected_node['host']} | {self.selected_node['connected_peers']} Peers | {'Synced' if self.selected_node['synced'] else 'Not Synced'} | T {self.selected_node['top_layer']} | S {self.selected_node['synced_layer']} | V {self.selected_node['verified_layer']}")
         self.query_one('#node-data-smeshing').update(f"{self.selected_node['post_state']} | {self.selected_node['size_gib']} GiB ({self.selected_node['space_units']} SU) | {self.selected_node['assigned_layers_count']} Layers")
-        self.query_one('#node-data-layers').update(f"[b]Layers:[/b] {'None' if not self.selected_node['assigned_layers'] else ', '.join(map(str, self.selected_node['assigned_layers']))}")
+        self.query_one('#node-data-layers').update(f"[b]Layers:[/b] {'None' if not self.selected_node['assigned_layers'] else ', '.join(map(str, self.selected_node['assigned_layers'].sort()))}")
 
     @on(Button.Pressed, '#btn-copy-layers')
     def on_copy(self):
