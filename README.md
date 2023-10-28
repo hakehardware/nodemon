@@ -3,6 +3,13 @@ Monitors a Spacemesh Node
 
 
 ### Install Instructions (Ubuntu)
+
+#### Install Dependencies (used to copy and paste Layers)
+Only needed if you press the 'copy layers' button
+```
+sudo apt-get install xclip
+```
+
 ```
 git clone https://github.com/hakehardware/nodemon.git
 ```
