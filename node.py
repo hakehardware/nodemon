@@ -117,12 +117,13 @@ class Node:
             #TODO: Handle Error
             pass
 
-    def set_assigned_layers(self):
+    def set_assigned_layers_count(self):
         if not self.event_stream:
             self.get_event_stream()
         
         assigned_layers_count = 0
-        
+
+
         for event in self.event_stream:
             eligibilities = event.get("eligibilities", None)
             if eligibilities and eligibilities['epoch'] == self.node_data['current_epoch']:
@@ -131,6 +132,15 @@ class Node:
                     assigned_layers_count = layer['count'] + assigned_layers_count
 
         self.node_data['assigned_layers_count'] = assigned_layers_count
+
+    def set_assigned_layers(self):
+        if not self.event_stream:
+            self.get_event_stream()
+
+        for event in self.event_stream:
+            eligibilities = event.get("eligibilities", None)
+            if eligibilities and eligibilities['epoch'] == self.node_data['current_epoch']:
+                self.set_assigned_layers = [item['layer'] for item in eligibilities['eligibilities'] for _ in range(item['count'])]
 
     def get_event_stream(self):
         self.event_stream = GRPCAPI.get_event_stream(self.node_data["private"])
@@ -156,4 +166,5 @@ class Node:
         self.set_post_setup_status()
         self.set_post_setup_status_providers()
         self.set_assigned_layers()
+        self.set_assigned_layers_count()
         self.set_heartbeat(time())
