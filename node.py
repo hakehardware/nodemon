@@ -100,6 +100,13 @@ class Node:
             self.smeshing['size_gib'] = results[8]['size_gib']
             self.smeshing['assigned_layers'] = results[10]
 
+            if self.smeshing['assigned_layers']:
+                for layers in self.smeshing['assigned_layers']:
+                    if layers['epoch'] == self.network['current_epoch']:
+                        self.smeshing['assign_layers_count'] = len(layers['layers'])
+            else:
+                self.smeshing['assign_layers_count'] = 0
+
         except Exception as e:
             traceback.print_exc()
 

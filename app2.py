@@ -94,13 +94,10 @@ class Nodemon(App):
             nodes.append(node_instance)
 
         while True:
-
-            
-
             tasks = []
 
             for node in nodes:
-                tasks.append(node.refresh_data)
+                tasks.append(node.refresh_data())
 
             results = await asyncio.gather(*tasks)
 
@@ -112,41 +109,40 @@ class Nodemon(App):
             # For each node add a row
             for index, node in enumerate(nodes):
                 node_data = node.get_data()
-                
                 self.node_data.append(node_data)
 
                 if not table.is_valid_row_index(index):
-                    self.call_from_thread(table.add_row, *[
-                        node_data['name'], 
-                        node_data['version'], 
-                        node_data['host'], 
-                        node_data['connected_peers'], 
-                        str(node_data['synced']), 
-                        str(node_data['top_layer']), 
-                        str(node_data['verified_layer']), 
-                        str(node_data['synced_layer']), 
-                        str(node_data['smeshing']), 
-                        str(node_data['post_state']), 
-                        str(node_data['space_units']), 
-                        str(node_data['size_gib']), 
-                        str(node_data['assigned_layers_count'])
+                    table.add_row( *[
+                        node_data['info']['node_name'], 
+                        node_data['info']['version'], 
+                        node_data['network']['host'], 
+                        node_data['network']['peers'], 
+                        node_data['network']['is_synced'],
+                        node_data['network']['top_layer'], 
+                        node_data['network']['verified_layer'], 
+                        node_data['network']['synced_layer'], 
+                        node_data['smeshing']['is_smeshing'], 
+                        node_data['smeshing']['post_state'], 
+                        node_data['smeshing']['space_units'], 
+                        node_data['smeshing']['size_gib'], 
+                        node_data['smeshing']['assign_layers_count'], 
                         ], key=str(index))
                 else:
-                    self.call_from_thread(table.update_cell, str(index), "0", str(node_data['name']))
-                    self.call_from_thread(table.update_cell, str(index), "1", str(node_data['version']))
-                    self.call_from_thread(table.update_cell, str(index), "2", str(node_data['host']))
-                    self.call_from_thread(table.update_cell, str(index), "3", str(node_data['connected_peers']))
-                    self.call_from_thread(table.update_cell, str(index), "4", str(node_data['synced']))
-                    self.call_from_thread(table.update_cell, str(index), "5", str(node_data['top_layer']))
-                    self.call_from_thread(table.update_cell, str(index), "6", str(node_data['verified_layer']))
-                    self.call_from_thread(table.update_cell, str(index), "7", str(node_data['synced_layer']))
-                    self.call_from_thread(table.update_cell, str(index), "8", str(node_data['smeshing']))
-                    self.call_from_thread(table.update_cell, str(index), "9", str(node_data['post_state']))
-                    self.call_from_thread(table.update_cell, str(index), "10", str(node_data['space_units']))
-                    self.call_from_thread(table.update_cell, str(index), "11", str(node_data['size_gib']))
-                    self.call_from_thread(table.update_cell, str(index), "12", str(node_data['assigned_layers_count']))
+                    table.update_cell( str(index), "0", node_data['info']['node_name'])
+                    table.update_cell( str(index), "1", node_data['info']['version'])
+                    table.update_cell( str(index), "2", node_data['network']['host'])
+                    table.update_cell( str(index), "3", node_data['network']['peers'])
+                    table.update_cell( str(index), "4", node_data['network']['is_synced'])
+                    table.update_cell( str(index), "5", node_data['network']['top_layer'])
+                    table.update_cell( str(index), "6", node_data['network']['verified_layer'])
+                    table.update_cell( str(index), "7", node_data['network']['synced_layer'])
+                    table.update_cell( str(index), "8", node_data['smeshing']['is_smeshing'])
+                    table.update_cell( str(index), "9", node_data['smeshing']['post_state'])
+                    table.update_cell( str(index), "10", node_data['smeshing']['space_units'])
+                    table.update_cell( str(index), "11", node_data['smeshing']['size_gib'])
+                    table.update_cell( str(index), "12", node_data['smeshing']['assign_layers_count'])
 
-            sleep(60)
+            asyncio.sleep(60)
 
     # Displays data about the node that was selected
     @on(DataTable.RowSelected)
