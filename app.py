@@ -158,7 +158,7 @@ class Nodemon(App):
         self.query_one('#node-data-smesher-id').update(f"[b]Smesher ID:[/b] {self.selected_node['smeshing']['node_id']}")
         self.query_one('#node-data-network').update(f"{self.selected_node['network']['host']} | {self.selected_node['network']['peers']} Peers | {'Synced' if self.selected_node['network']['is_synced'] else 'Not Synced'} | T {self.selected_node['network']['top_layer']} | S {self.selected_node['network']['synced_layer']} | V {self.selected_node['network']['verified_layer']}")
         self.query_one('#node-data-smeshing').update(f"{self.selected_node['smeshing']['post_state']} | {self.selected_node['smeshing']['size_gib']} GiB ({self.selected_node['smeshing']['space_units']} SU) | {self.selected_node['smeshing']['assigned_layers_count']} Layers")
-        self.query_one('#node-data-layers').update(f"[b]Layers:[/b] {'None' if not self.selected_node['smeshing']['assigned_layers'] else ', '.join(map(str, self.selected_node['smeshing']['assigned_layers']))}")
+        self.query_one('#node-data-layers').update(f"[b]Layers:[/b] {'None' if not self.selected_node['smeshing']['assigned_layers'] else ', '.join(map(str, self.selected_node['smeshing']['assigned_layers']['layers']))}")
 
     # @on(Button.Pressed, '#btn-copy-layers')
     # def on_copy(self):

@@ -154,7 +154,7 @@ class GRPCAPI:
             data = {
                 'max_file_size_gib': int(int(max_file_size) / 1024**3) if max_file_size else 0,
                 'space_units': space_units,
-                'size_gib': space_units * 64 if space_units == 0 else 0,
+                'size_gib': space_units * 64 if space_units > 0 else 0,
                 'post_state': post_state,
                 'post_data_dir': post_data_dir,
                 'provider_id': provider_id
