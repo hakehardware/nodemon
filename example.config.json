@@ -3,7 +3,8 @@
         {
             "public": "localhost:9092",
             "private": "localhost:9093",
-            "name": "Delta 01"
+            "name": "Delta 01",
+            "logs": "/home/hakedev/nodes/node01/sm_data/logs/spacemesh.log"
         }
     ]
 }
