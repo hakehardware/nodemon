@@ -189,7 +189,7 @@ class GRPCAPI:
     @staticmethod
     async def get_event_stream(ip):
         # TODO: Implement Stream Parser
-        
+
         try:
             admin_client = AdminClient(ip)
             results = await asyncio.to_thread(admin_client.get_event_stream)
@@ -200,7 +200,7 @@ class GRPCAPI:
                 eligibilities = event.get("eligibilities", None)
                 if eligibilities:
                     # and eligibilities['epoch'] == self.node_data['current_epoch']:
-                    assigned_layers.push(
+                    assigned_layers.append(
                         {
                             'epoch': eligibilities['epoch'], 
                             'layers': [item['layer'] for item in eligibilities['eligibilities'] for _ in range(item['count'])]
