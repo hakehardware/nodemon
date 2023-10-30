@@ -9,6 +9,7 @@ import json
 from time import sleep
 from node import Node
 import threading
+import asyncio
 
 HEADERS = ["Name", "Version", "IP", "Peers", "Synced", "Top", "Verified", "Synced", "Smeshing", "PoST State", "SU", "GiB", "Layers"]
 
@@ -82,8 +83,8 @@ class Nodemon(App):
             self.query_one(DataTable).focus()
             self.title = "Nodemon"
 
-    @work(thread=True)
-    def node_worker(self):
+    @work(exclusive=True)
+    async def node_worker(self):
 
         table = self.query_one(DataTable)
 
@@ -93,15 +94,12 @@ class Nodemon(App):
             nodes.append(node_instance)
 
         while True:
-            threads = []
+            tasks = []
 
             for node in nodes:
-                thread = threading.Thread(target=node.load_all_data)
-                thread.start()
-                threads.append(thread)
+                tasks.append(node.refresh_data())
 
-            for thread in threads:
-                thread.join()
+            await asyncio.gather(*tasks)
 
             if self.first_load:
                 self.query_one(NodeLoading).add_class('-hidden')
@@ -110,42 +108,41 @@ class Nodemon(App):
 
             # For each node add a row
             for index, node in enumerate(nodes):
-                node_data = node.get_node_data()
-                
+                node_data = node.get_data()
                 self.node_data.append(node_data)
 
                 if not table.is_valid_row_index(index):
-                    self.call_from_thread(table.add_row, *[
-                        node_data['name'], 
-                        node_data['version'], 
-                        node_data['host'], 
-                        node_data['connected_peers'], 
-                        str(node_data['synced']), 
-                        str(node_data['top_layer']), 
-                        str(node_data['verified_layer']), 
-                        str(node_data['synced_layer']), 
-                        str(node_data['smeshing']), 
-                        str(node_data['post_state']), 
-                        str(node_data['space_units']), 
-                        str(node_data['size_gib']), 
-                        str(node_data['assigned_layers_count'])
+                    table.add_row( *[
+                        node_data['info']['node_name'], 
+                        node_data['info']['version'], 
+                        node_data['network']['host'], 
+                        node_data['network']['peers'], 
+                        node_data['network']['is_synced'],
+                        node_data['network']['top_layer'], 
+                        node_data['network']['verified_layer'], 
+                        node_data['network']['synced_layer'], 
+                        node_data['smeshing']['is_smeshing'], 
+                        node_data['smeshing']['post_state'], 
+                        node_data['smeshing']['space_units'], 
+                        node_data['smeshing']['size_gib'], 
+                        node_data['smeshing']['assigned_layers_count'], 
                         ], key=str(index))
                 else:
-                    self.call_from_thread(table.update_cell, str(index), "0", str(node_data['name']))
-                    self.call_from_thread(table.update_cell, str(index), "1", str(node_data['version']))
-                    self.call_from_thread(table.update_cell, str(index), "2", str(node_data['host']))
-                    self.call_from_thread(table.update_cell, str(index), "3", str(node_data['connected_peers']))
-                    self.call_from_thread(table.update_cell, str(index), "4", str(node_data['synced']))
-                    self.call_from_thread(table.update_cell, str(index), "5", str(node_data['top_layer']))
-                    self.call_from_thread(table.update_cell, str(index), "6", str(node_data['verified_layer']))
-                    self.call_from_thread(table.update_cell, str(index), "7", str(node_data['synced_layer']))
-                    self.call_from_thread(table.update_cell, str(index), "8", str(node_data['smeshing']))
-                    self.call_from_thread(table.update_cell, str(index), "9", str(node_data['post_state']))
-                    self.call_from_thread(table.update_cell, str(index), "10", str(node_data['space_units']))
-                    self.call_from_thread(table.update_cell, str(index), "11", str(node_data['size_gib']))
-                    self.call_from_thread(table.update_cell, str(index), "12", str(node_data['assigned_layers_count']))
+                    table.update_cell( str(index), "0", node_data['info']['node_name'])
+                    table.update_cell( str(index), "1", node_data['info']['version'])
+                    table.update_cell( str(index), "2", node_data['network']['host'])
+                    table.update_cell( str(index), "3", node_data['network']['peers'])
+                    table.update_cell( str(index), "4", node_data['network']['is_synced'])
+                    table.update_cell( str(index), "5", node_data['network']['top_layer'])
+                    table.update_cell( str(index), "6", node_data['network']['verified_layer'])
+                    table.update_cell( str(index), "7", node_data['network']['synced_layer'])
+                    table.update_cell( str(index), "8", node_data['smeshing']['is_smeshing'])
+                    table.update_cell( str(index), "9", node_data['smeshing']['post_state'])
+                    table.update_cell( str(index), "10", node_data['smeshing']['space_units'])
+                    table.update_cell( str(index), "11", node_data['smeshing']['size_gib'])
+                    table.update_cell( str(index), "12", node_data['smeshing']['assigned_layers_count'])
 
-            sleep(60)
+            asyncio.sleep(60)
 
     # Displays data about the node that was selected
     @on(DataTable.RowSelected)
@@ -155,13 +152,13 @@ class Nodemon(App):
         index = event.data_table.get_row_index(event.row_key)
         
         self.selected_node = self.node_data[index]
-        name = f"{self.selected_node['name']} ({self.selected_node['version']})"
+        name = f"{self.selected_node['info']['node_name']} ({self.selected_node['info']['version']})"
         self.title = f"Nodemon > {name}"
 
-        self.query_one('#node-data-smesher-id').update(f"[b]Smesher ID:[/b] {self.selected_node['node_id']}")
-        self.query_one('#node-data-network').update(f"{self.selected_node['host']} | {self.selected_node['connected_peers']} Peers | {'Synced' if self.selected_node['synced'] else 'Not Synced'} | T {self.selected_node['top_layer']} | S {self.selected_node['synced_layer']} | V {self.selected_node['verified_layer']}")
-        self.query_one('#node-data-smeshing').update(f"{self.selected_node['post_state']} | {self.selected_node['size_gib']} GiB ({self.selected_node['space_units']} SU) | {self.selected_node['assigned_layers_count']} Layers")
-        self.query_one('#node-data-layers').update(f"[b]Layers:[/b] {'None' if not self.selected_node['assigned_layers'] else ', '.join(map(str, self.selected_node['assigned_layers']))}")
+        self.query_one('#node-data-smesher-id').update(f"[b]Smesher ID:[/b] {self.selected_node['smeshing']['node_id']}")
+        self.query_one('#node-data-network').update(f"{self.selected_node['network']['host']} | {self.selected_node['network']['peers']} Peers | {'Synced' if self.selected_node['network']['is_synced'] else 'Not Synced'} | T {self.selected_node['network']['top_layer']} | S {self.selected_node['network']['synced_layer']} | V {self.selected_node['network']['verified_layer']}")
+        self.query_one('#node-data-smeshing').update(f"{self.selected_node['smeshing']['post_state']} | {self.selected_node['smeshing']['size_gib']} GiB ({self.selected_node['smeshing']['space_units']} SU) | {self.selected_node['smeshing']['assigned_layers_count']} Layers")
+        self.query_one('#node-data-layers').update(f"[b]Layers:[/b] {'None' if not self.selected_node['smeshing']['assigned_layers'] else ', '.join(map(str, self.selected_node['smeshing']['assigned_layers']))}")
 
     # @on(Button.Pressed, '#btn-copy-layers')
     # def on_copy(self):
