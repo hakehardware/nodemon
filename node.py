@@ -104,3 +104,10 @@ class Node:
             traceback.print_exc()
 
         
+    def get_data(self):
+        return {
+            'info': self.info,
+            'network': self.network,
+            'genesis': self.genesis,
+            'smeshing': self.smeshing
+        }
