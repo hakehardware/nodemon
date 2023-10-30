@@ -98,14 +98,16 @@ class Node:
             self.smeshing['max_file_size_gib'] = results[8]['max_file_size_gib']
             self.smeshing['space_units'] = results[8]['space_units']
             self.smeshing['size_gib'] = results[8]['size_gib']
-            self.smeshing['assigned_layers'] = results[10]
+            layers = results[10]
 
-            if self.smeshing['assigned_layers']:
+            if layers:
                 for layers in self.smeshing['assigned_layers']:
                     if layers['epoch'] == self.network['current_epoch']:
                         self.smeshing['assigned_layers_count'] = len(layers['layers'])
+                        self.smeshing['assigned_layers'] = layers['layers']
             else:
                 self.smeshing['assigned_layers_count'] = 0
+                self.smeshing['assigned_layers'] = None
 
         except Exception as e:
             traceback.print_exc()
