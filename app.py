@@ -5,47 +5,15 @@ from textual.binding import Binding
 from textual import work
 from textual import on
 
+from nodedata import NodeData
+from nodetable import NodeTable
+from nodeloading import NodeLoading
+
 import json
 from time import sleep
 from node import Node
 import threading
 import asyncio
-
-HEADERS = ["Name", "Version", "IP", "Peers", "Synced", "Top", "Verified", "Synced", "Smeshing", "PoST State", "SU", "GiB", "Layers"]
-
-class NodeTable(Container):
-    def compose(self) -> ComposeResult:
-        yield DataTable()
-
-    def on_mount(self) -> None:
-        table = self.query_one(DataTable)
-        table.cursor_type = "row"
-        table.zebra_stripes = True
-
-        # Add headers to table
-        for index, header in enumerate(HEADERS):
-            table.add_column(header, key=str(index))
-
-
-
-class NodeData(Container):
-    def compose(self) -> ComposeResult:
-        with Container(classes='box', id='node-data-logs'):
-            yield Static("Logs (coming soon)")
-        with Container(classes='box', id='node-data-info'):
-            yield Label("Loading...", classes='light-background', id='node-data-smesher-id')
-            yield Label("Loading...", classes='light-background', id='node-data-network')
-            yield Label("Loading...", classes='light-background', id='node-data-smeshing')
-            yield Label("Loading...", classes='light-background', id='node-data-layers')
-            #yield Button("Copy Layers", id='btn-copy-layers')
-
-
-
-class NodeLoading(Container):
-    def compose(self) -> ComposeResult:
-        yield Static('🥔  Harvesting Potatoes (please wait) 🥔', id='loading-message')
-        yield LoadingIndicator(id="loading-indicator", name="Loading Node Data")
-
 
 class Nodemon(App):
 
