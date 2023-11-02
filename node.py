@@ -43,12 +43,15 @@ class Node:
             "max_file_size_gib": None,
             "space_units": None,
             "size_gib": None,
-            "assigned_layers": None
+            "assigned_layers": None,
+            "assigned_layers_count": None
         }
 
         self.rewards = None #TODO
 
         self.atx = None #TODO
+
+        self.logs = None
 
     async def refresh_data(self):
 
@@ -98,25 +101,28 @@ class Node:
             self.smeshing['max_file_size_gib'] = results[8]['max_file_size_gib']
             self.smeshing['space_units'] = results[8]['space_units']
             self.smeshing['size_gib'] = results[8]['size_gib']
-            available_layers = results[10]
 
-            if available_layers:
-                for layers in available_layers:
-                    if layers['epoch'] == self.network['current_epoch']:
-                        self.smeshing['assigned_layers_count'] = len(layers['layers'])
-                        self.smeshing['assigned_layers'] = layers['layers']
-            else:
-                self.smeshing['assigned_layers_count'] = 0
-                self.smeshing['assigned_layers'] = None
+            eligibilities = [item for item in results[10] if item.get('event_name') == 'Layer Eligibilities']
+
+            self.smeshing['assigned_layers_count'] = 0
+            self.smeshing['assigned_layers'] = None
+
+            if eligibilities:
+                for row in eligibilities:
+                    if row['epoch'] == self.network['current_epoch']:
+                        self.smeshing['assigned_layers_count'] = len(row['layers'])
+                        self.smeshing['assigned_layers'] = row['layers']
+
+            self.logs = results[10]
 
         except Exception as e:
             traceback.print_exc()
 
-        
     def get_data(self):
         return {
             'info': self.info,
             'network': self.network,
             'genesis': self.genesis,
-            'smeshing': self.smeshing
+            'smeshing': self.smeshing,
+            'logs': self.logs
         }

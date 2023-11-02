@@ -5,14 +5,14 @@ from textual.binding import Binding
 from textual import work
 from textual import on
 
-from nodedata import NodeData
-from nodetable import NodeTable
-from nodeloading import NodeLoading
+from components.nodedata import NodeData
+from components.nodetable import NodeTable
+from components.nodeloading import NodeLoading
+from components.dashboard import Dashboard
 
 import json
 from time import sleep
 from node import Node
-import threading
 import asyncio
 
 class Nodemon(App):

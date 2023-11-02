@@ -2,6 +2,8 @@ from grpc_lib import ActivationClient, AdminClient, NodeClient, SmesherClient, D
 import traceback
 import asyncio
 
+from utils import get_date
+
 class GRPCAPI:
     @staticmethod
     async def get_highest_atx(ip):
@@ -194,19 +196,46 @@ class GRPCAPI:
             admin_client = AdminClient(ip)
             results = await asyncio.to_thread(admin_client.get_event_stream)
 
-            assigned_layers = []
+            events = []
 
             for event in results:
                 eligibilities = event.get("eligibilities", None)
+                poetwaitproof = event.get("poetWaitProof", None)
+                beacon = event.get("beacon", None)
+                init_start = event.get("initStart", None)
+                init_complete = event.get("initComplete", None)
+
                 if eligibilities:
                     # and eligibilities['epoch'] == self.node_data['current_epoch']:
-                    assigned_layers.append(
-                        {
-                            'epoch': eligibilities['epoch'], 
-                            'layers': [item['layer'] for item in eligibilities['eligibilities'] for _ in range(item['count'])]
-                        })
+                    events.append({
+                        'event_name': 'Layer Eligibilities',
+                        'epoch': eligibilities['epoch'],
+                        'layers': [item['layer'] for item in eligibilities['eligibilities'] for _ in range(item['count'])]
+                    })
                     
-            return assigned_layers
+                elif poetwaitproof:
+                    events.append({
+                        'event_name': 'PoET Wait Proof',
+                        'target_epoch': event['poetWaitProof']['target'],
+                        'publish_epoch': event['poetWaitProof']['publish'],
+                        'wait': int(event['poetWaitProof']['wait'].split('.')[0]),
+                        'log': event['help'],
+                        'timestamp': get_date(event['timestamp'])
+                    })
+
+                elif beacon:
+                    pass
+
+                elif init_start:
+                    pass
+
+                elif init_complete:
+                    pass
+                    
+                else:
+                    events.append(event)
+                    
+            return events
 
 
         except Exception as e:
