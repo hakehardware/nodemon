@@ -37,7 +37,13 @@ Button {
     display: none;
 }
 
-
+#side-bar {
+    dock: left;
+    width: 40;
+    height: 100%;
+    color: #0f2b41;
+    background: darkgray;
+}
 
 
 

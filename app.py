@@ -69,6 +69,8 @@ class Nodemon(App):
 
             await asyncio.gather(*tasks)
 
+
+
             if self.first_load:
                 self.query_one(NodeLoading).add_class('-hidden')
                 self.query_one('#node-container').remove_class('-hidden')
@@ -110,7 +112,7 @@ class Nodemon(App):
                     table.update_cell( str(index), "11", node_data['smeshing']['size_gib'])
                     table.update_cell( str(index), "12", node_data['smeshing']['assigned_layers_count'])
 
-            asyncio.sleep(60)
+            await asyncio.sleep(60)
 
     # Displays data about the node that was selected
     @on(DataTable.RowSelected)

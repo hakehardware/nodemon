@@ -1,6 +1,7 @@
 from grpc_lib import ActivationClient, AdminClient, NodeClient, SmesherClient, DebugClient, GlobalStateClient, MeshClient
 import traceback
 import asyncio
+import aiohttp
 
 from utils import get_date
 
@@ -242,3 +243,18 @@ class GRPCAPI:
             print(e)
             traceback.print_exc()
             return False
+        
+
+
+class ExplorerAPI:
+    @staticmethod
+    async def get_layers():
+        url = "https://mainnet-explorer-1-api.spacemesh.network/layers"
+        
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    return data['data']
+                else:
+                    return None
