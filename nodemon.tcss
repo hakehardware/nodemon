@@ -1,42 +1,3 @@
-DataTable.-hidden {
-    display: none;
-}
-
-# #loading.-hidden {
-#     display: none;
-# }
-
-
-
-
-
-
-
-#node-data.-hidden {
-    display: none;
-}
-
-Button {
-    text-style: none;
-}
-
-#back-to-main {
-    margin: 1 1;
-    padding: 0;
-}
-
-#node-pane.-hidden {
-    display: none;
-}
-
-#node-table.-hidden {
-    display: none;
-}
-
-#test-hidden {
-    display: none;
-}
-
 #side-bar {
     dock: left;
     width: 40;
@@ -45,26 +6,49 @@ Button {
     background: darkgray;
 }
 
+#log-container {
+    dock: left;
+    width: 40;
+    height: 100%;
+    color: #0f2b41;
+    background: darkgray;
+}
 
+#node-status {
+    dock: top;
+    width: 100%;
+    height: 1;
+    color: #0f2b41;
+    background: darkgray;
+}
 
-NodeTable.-hidden {
+#container-node-table.-hidden {
     display: none;
 }
 
-NodeData.-hidden {
+#container-node-data.-hidden {
     display: none;
 }
 
-NodeLoading.-hidden {
+#node-screen-loading.-hidden {
     display: none;
 }
 
-#node-container.-hidden {
+#layer-screen-loading.-hidden {
+    display: none;
+}
+
+#container-layer-table.-hidden {
     display: none;
 }
 
 # Loading Bar
-#node-loading {
+#layer-screen-loading {
+    align-vertical: middle;
+    height: 90%;
+}
+
+#node-screen-loading {
     align-vertical: middle;
     height: 90%;
 }
@@ -78,26 +62,39 @@ LoadingIndicator {
 }
 
 # Top Level Node Data Grid
-NodeData {
-    layout: grid;
-    grid-size: 2 1;
-    grid-columns: 1fr 3fr;
-}
+# #container-node-data {
+#     layout: grid;
+#     grid-size: 2 1;
+#     grid-columns: 1fr 3fr;
+# }
 
 .box {
     height: 100%;
-    border: solid green;
+    border: solid gray;
 }
 
 
 # Node Info Grid
 #node-data-info {
     layout: grid;
-    grid-size: 1 5;
-    padding: 1
+    grid-size: 2 2;
+    grid-columns: 1fr 1fr;
+    grid-rows: 10% 90%;
 }
 
-.light-background {
-    background: black 30%;
-    padding: 1;
+#status-bar {
+    column-span: 2;
+    layout: grid;
+    grid-size: 2 1;
+    grid-columns: 10% 90%;
+}
+
+DataTable {
+    width: 1fr;
+    height: 100%;
+}
+
+#back-to-table-btn {
+    border: none;
+    height: 1;
 }

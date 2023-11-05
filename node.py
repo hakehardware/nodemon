@@ -11,7 +11,8 @@ class Node:
             "node_name": config['name'],
             "version": None,
             "build": None,
-            "heartbeat": None
+            "heartbeat": None,
+            "status": 'Offline'
         }
 
         self.network = {
@@ -71,49 +72,53 @@ class Node:
             ]
 
             results = await asyncio.gather(*tasks)
+            if results[0] == "Error getting App Version":
+                self.info['status'] = "Offline"
+            
+            else:
+                # Set Info
+                self.info['version'] = results[0]['version']
+                self.info['build'] = results[1]['build']
+                self.info['heartbeat'] = datetime.now()
+                self.info['status'] = "Online"
 
-            # Set Info
-            self.info['version'] = results[0]['version']
-            self.info['build'] = results[1]['build']
-            self.info['heartbeat'] = datetime.now()
+                # Set Network
+                self.network['peers'] = results[3]['peers']
+                self.network['is_synced'] = results[3]['is_synced']
+                self.network['synced_layer'] = results[3]['synced_layer']
+                self.network['top_layer'] = results[3]['top_layer']
+                self.network['verified_layer'] = results[3]['verified_layer']
+                self.network['highest_atx'] = results[2]['highest_atx']
+                self.network['current_epoch'] = results[3]['current_epoch']
 
-            # Set Network
-            self.network['peers'] = results[3]['peers']
-            self.network['is_synced'] = results[3]['is_synced']
-            self.network['synced_layer'] = results[3]['synced_layer']
-            self.network['top_layer'] = results[3]['top_layer']
-            self.network['verified_layer'] = results[3]['verified_layer']
-            self.network['highest_atx'] = results[2]['highest_atx']
-            self.network['current_epoch'] = results[3]['current_epoch']
+                # Set Genesis
+                self.genesis['first_genesis'] = results[4]['first_genesis']
+                self.genesis['epoch_size'] = results[4]['epoch_size']
+                self.genesis['effective_genesis'] = results[4]['effective_genesis']
 
-            # Set Genesis
-            self.genesis['first_genesis'] = results[4]['first_genesis']
-            self.genesis['epoch_size'] = results[4]['epoch_size']
-            self.genesis['effective_genesis'] = results[4]['effective_genesis']
+                # Set Smeshing
+                self.smeshing['is_smeshing'] = results[5]['is_smeshing']
+                self.smeshing['node_id'] = results[6]['node_id']
+                self.smeshing['coinbase'] = results[7]['coinbase']
+                self.smeshing['post_state'] = results[8]['post_state']
+                self.smeshing['post_data_dir'] = results[8]['post_data_dir']
+                self.smeshing['provider_id'] = results[8]['provider_id']
+                self.smeshing['max_file_size_gib'] = results[8]['max_file_size_gib']
+                self.smeshing['space_units'] = results[8]['space_units']
+                self.smeshing['size_gib'] = results[8]['size_gib']
 
-            # Set Smeshing
-            self.smeshing['is_smeshing'] = results[5]['is_smeshing']
-            self.smeshing['node_id'] = results[6]['node_id']
-            self.smeshing['coinbase'] = results[7]['coinbase']
-            self.smeshing['post_state'] = results[8]['post_state']
-            self.smeshing['post_data_dir'] = results[8]['post_data_dir']
-            self.smeshing['provider_id'] = results[8]['provider_id']
-            self.smeshing['max_file_size_gib'] = results[8]['max_file_size_gib']
-            self.smeshing['space_units'] = results[8]['space_units']
-            self.smeshing['size_gib'] = results[8]['size_gib']
+                eligibilities = [item for item in results[10] if item.get('event_name') == 'Layer Eligibilities']
 
-            eligibilities = [item for item in results[10] if item.get('event_name') == 'Layer Eligibilities']
+                self.smeshing['assigned_layers_count'] = 0
+                self.smeshing['assigned_layers'] = None
 
-            self.smeshing['assigned_layers_count'] = 0
-            self.smeshing['assigned_layers'] = None
+                if eligibilities:
+                    for row in eligibilities:
+                        if row['epoch'] == self.network['current_epoch']:
+                            self.smeshing['assigned_layers_count'] = len(row['layers'])
+                            self.smeshing['assigned_layers'] = row['layers']
 
-            if eligibilities:
-                for row in eligibilities:
-                    if row['epoch'] == self.network['current_epoch']:
-                        self.smeshing['assigned_layers_count'] = len(row['layers'])
-                        self.smeshing['assigned_layers'] = row['layers']
-
-            self.logs = results[10]
+                self.logs = results[10]
 
         except Exception as e:
             traceback.print_exc()

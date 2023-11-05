@@ -1,9 +1,8 @@
 from grpc_lib import ActivationClient, AdminClient, NodeClient, SmesherClient, DebugClient, GlobalStateClient, MeshClient
+from utils.helpers import Helpers
 import traceback
 import asyncio
 import aiohttp
-
-from utils import get_date
 
 class GRPCAPI:
     @staticmethod
@@ -208,10 +207,14 @@ class GRPCAPI:
 
                 if eligibilities:
                     # and eligibilities['epoch'] == self.node_data['current_epoch']:
+                    layers = [item['layer'] for item in eligibilities['eligibilities'] for _ in range(item['count'])]
+                    log = ""
                     events.append({
                         'event_name': 'Layer Eligibilities',
                         'epoch': eligibilities['epoch'],
-                        'layers': [item['layer'] for item in eligibilities['eligibilities'] for _ in range(item['count'])]
+                        'log': event['help'],
+                        'timestamp': Helpers.get_date(event['timestamp']),
+                        'layers': layers
                     })
                     
                 elif poetwaitproof:
@@ -221,7 +224,7 @@ class GRPCAPI:
                         'publish_epoch': event['poetWaitProof']['publish'],
                         'wait': int(event['poetWaitProof']['wait'].split('.')[0]),
                         'log': event['help'],
-                        'timestamp': get_date(event['timestamp'])
+                        'timestamp': Helpers.get_date(event['timestamp'])
                     })
 
                 elif beacon:
@@ -234,7 +237,10 @@ class GRPCAPI:
                     pass
                     
                 else:
-                    events.append(event)
+                    events.append({
+                        'timestamp': Helpers.get_date(event['timestamp']),
+                        'log': event['help'],
+                    })
                     
             return events
 

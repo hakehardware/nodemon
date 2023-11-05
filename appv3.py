@@ -1,12 +1,11 @@
 from screens.Dashboard import DashboardScreen
 from screens.Nodes import NodesScreen
+from screens.Layers import LayersScreen
 from screens.Settings import SettingsScreen
-from node import Node
-from api import ExplorerAPI
+from utils.datahandler import DataHandler
 
 from textual.app import App
 from textual import work
-from textual import on
 
 import json
 
@@ -20,6 +19,7 @@ class Nodemon(App):
     BINDINGS = [
         ("d", "switch_screen('dashboard')", "Dashboard"),  
         ("n", "switch_screen('nodes')", "Nodes"),
+        ("l", "switch_screen('layers')", "Layers"),
         ("s", "switch_screen('settings')", "Settings"),
         ("q", "app.quit", "Quit")
     ]
@@ -27,35 +27,30 @@ class Nodemon(App):
     SCREENS = {
         'dashboard': DashboardScreen(),
         'nodes': NodesScreen(),
-        'settings': SettingsScreen()
+        'layers': LayersScreen(),
+        'settings': SettingsScreen(),
     }
 
     CSS_PATH = "nodemon.tcss"
-    
+
     def on_mount(self) -> None:
         self.push_screen('settings')
         self.push_screen('nodes')
+        self.push_screen('layers')
         self.push_screen('dashboard')
         self.node_worker()
 
     @work(exclusive=True)
     async def node_worker(self):
-        nodes = [Node(node) for node in self.config['nodes']]
-
-        # for node in self.config['nodes']:
-        #     node_instance = Node(node)
-        #     nodes.append(node_instance)
 
         while True:
-            tasks = [node.refresh_data() for node in nodes]
-            await asyncio.gather(*tasks)
-            node_data = [node.get_data() for node in nodes]
-            layers = await ExplorerAPI.get_layers()
+            data = await DataHandler.handle_data(self.config, False)
 
-            self.SCREENS['dashboard'].update_components(node_data, layers)
-            self.SCREENS['nodes'].update_table(node_data)
+            self.SCREENS['dashboard'].update_components(data)
+            self.SCREENS['nodes'].update_table(data)
+            self.SCREENS['layers'].update_table(data)
 
-            await asyncio.sleep(5)
+            await asyncio.sleep(60)
 
 if __name__ == "__main__":
     with open('config.json', 'r') as config_file:
