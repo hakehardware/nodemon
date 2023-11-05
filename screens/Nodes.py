@@ -16,10 +16,10 @@ class NodeData(Container):
         #     yield RichLog(markup=True, wrap=True)
         with Container(id='node-data-info', classes='box'):
             with Container(id='status-bar'):
-                yield Button('<<< Back', id='back-to-table-btn')
+                yield Button('<<< Back (b)', id='back-to-table-btn')
                 yield Markdown("""**Last Updated:** None""", id='node-status-bar')
             with ScrollableContainer():
-                yield Markdown("More stuff here")
+                yield Markdown("Coming Soon")
             with ScrollableContainer():
                 yield Markdown("Loading...", id='node-data-markdown')
 

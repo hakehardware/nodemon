@@ -22,7 +22,8 @@ If you haven't already, create your config with
 `cp example.config.json config.json` (linux) 
 
 Then for each node you have, create an entry that mimicks the example. 
-Make sure that the config.mainnet.json for each node has the private grpc IP 
+
+**NOTE:** Make sure that the config.mainnet.json for each node has the private grpc IP 
 set to accept connections outside local host: `grpc-private-listener": "0.0.0.0:9093"`
 
 Depending on how you have your nodes set up, you could be done. But more complex setups will require more configurations. But as long as you have ports open and accessible you
@@ -32,10 +33,13 @@ should be able to hook up nodes on your local network.
 When you start up Nodemon, you will see the dashboard. On the left hand side is an aggregate
 view of all of your nodes. 
 
-- Total Nodes: Total online nodes you are receiving data for
-- Total Space Units: Sum of SU from all nodes
+- Total Nodes: Total nodes from your config
+- Total Space Units: Sum of Space Units from all nodes
+- Total PoST GiB: Total space of all your nodes
+- Total Offline: Number of nodes that are offline
+- Total Not Synced: Number of nodes that are not syced
+- Last Network Layer: The last layer completed by the network
 - Total Assigned Layers: Sum of assigned layers from all nodes
-- Assigned Layers Left: Sum of assigned layers which have not been reached
 - Next Assigned Layer: The next layer from all connected nodes that will be reached
 - Last Network Layer: The last layer completed by the network
 - TTNL: Time to Next Layer, this is the approximate time until your next assigned layer, along with the number
@@ -91,9 +95,9 @@ class DashboardScreen(Screen):
 
 **Last Completed Layer:** {data['Last Network Layer']['Number']}
 
-**Next Assigned Layer:** {data['Next Layer']['Layer']}
+**Next Assigned Layer:** {data['Next Layer']['Layer'] if data['Next Layer'] else "None"}
 
-**Next Layer Time:** {data['Next Layer']['Layer Time'].strftime("%b %d, %Y %H:%M:%S")}
+**Next Layer Time:** {data['Next Layer']['Layer Time'].strftime("%b %d, %Y %H:%M:%S") if data['Next Layer'] else "None"}
 
-**Layers to Layers:** {data['Next Layer']['Layers to Layer']}
+**Layers to Layers:** {data['Next Layer']['Layers to Layer'] if data['Next Layer'] else "None"}
 """

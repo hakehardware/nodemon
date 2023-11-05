@@ -109,6 +109,8 @@ class DataHandler:
                 return layer
             if layer['State'] == 'Pending':
                 return layer
+        
+        return None
     
     @staticmethod
     def get_assigned_layers(node, last_network_layer_start_time, last_layer):
