@@ -50,7 +50,7 @@ class Nodemon(App):
             self.SCREENS['nodes'].update_table(data)
             self.SCREENS['layers'].update_table(data)
 
-            await asyncio.sleep(60)
+            await asyncio.sleep(300)
 
 if __name__ == "__main__":
     with open('config.json', 'r') as config_file:
