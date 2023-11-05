@@ -23,7 +23,7 @@ If you haven't already, create your config with
 
 Then for each node you have, create an entry that mimicks the example. 
 Make sure that the config.mainnet.json for each node has the private grpc IP 
-set to accept connections outside local host: `grpc-private-listener": "0.0.0.0:9093`
+set to accept connections outside local host: `grpc-private-listener": "0.0.0.0:9093"`
 
 Depending on how you have your nodes set up, you could be done. But more complex setups will require more configurations. But as long as you have ports open and accessible you
 should be able to hook up nodes on your local network.
