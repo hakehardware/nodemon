@@ -45,3 +45,8 @@ If you want to update to the latest version, you can do so with git
 ```
 git pull
 ```
+
+Then make sure to install the latest requirements with 
+```
+pip install -r requirements.txt
+```
