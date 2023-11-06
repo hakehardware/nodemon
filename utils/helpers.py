@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from dateutil import tz
+import bech32
 
 class Helpers:
     @staticmethod
@@ -63,3 +64,26 @@ class Helpers:
 """
         else:
             return """Node Offline"""
+        
+    @staticmethod
+    def bech32_to_hex(bech32_string):
+        """Decode a bech32 encoded string into its hex representation."""
+        hrp, words = bech32.bech32_decode(bech32_string)
+        data = bech32.convertbits(words, frombits=5, tobits=8, pad=False)
+        return bytes(data).hex()
+    @staticmethod
+    def hex_to_bech32(hex_string):
+        """Encode a hexadecimal string as a Bech32 string."""
+        # Convert the hex string to bytes
+        data = hex_string
+        
+        # Convert bytes to a list of integers
+        byte_list = list(data)
+
+        # Convert the byte list to words with 5-bit encoding
+        words = bech32.convertbits(byte_list, frombits=8, tobits=5, pad=True)
+        
+        # Encode the words as Bech32 with the specified HRP
+        bech32_string = bech32.bech32_encode("sm", words)
+        
+        return bech32_string

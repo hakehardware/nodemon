@@ -1,6 +1,6 @@
 import asyncio
 from node import Node
-from api import ExplorerAPI
+from api import ExplorerAPI, DatabaseAPI
 from datetime import datetime, timedelta
 from dateutil import tz
 
@@ -36,7 +36,6 @@ class DataHandler:
         all_assigned_layers = []
 
         for node in node_data:
-            print
             if node['info']['status'] == "Online":
                 # Space Units
                 total_space_units+=node['smeshing']['space_units']
@@ -60,6 +59,10 @@ class DataHandler:
 
         all_assigned_layers = sorted(all_assigned_layers, key=lambda x:x['Layer'])
 
+        rewards = DataHandler.get_rewards(all_assigned_layers, last_network_layer['Epoch'], config)
+
+        DataHandler.append_rewards(rewards, all_assigned_layers)
+
         next_layer = DataHandler.get_next_layer(all_assigned_layers)
 
         return {
@@ -71,7 +74,8 @@ class DataHandler:
             'Total PoST GiB': total_post_gib,
             'Total Nodes': total_nodes,
             'Total Offline': total_offline,
-            'Next Layer': next_layer
+            'Next Layer': next_layer,
+            'Rewards': rewards
         }
         
 
@@ -79,8 +83,10 @@ class DataHandler:
     @staticmethod
     def get_last_network_layer(layers):
         """The last network layer that was completed"""
+        if not layers:
+            return None
+        
         layers = sorted(layers, key=lambda x: x['number'], reverse=True)
-        print(layers)
         return {
             'Number': layers[0]['number'],
             'Status': layers[0]['status'],
@@ -100,6 +106,8 @@ class DataHandler:
     @staticmethod
     def get_last_network_layer_start_time(last_network_layer):
         """Takes in the last network layer and returns the start time"""
+        if not last_network_layer:
+            return None
         return datetime.fromtimestamp(last_network_layer['Start Time'])
     
     @staticmethod
@@ -126,7 +134,7 @@ class DataHandler:
                 if current_layer + 1 == layer:
                     state = 'Current'
                 elif layer > current_layer:
-                    state = 'Pending'
+                    state = 'Waiting'
                 elif layer < current_layer:
                     state = 'Old'
 
@@ -137,8 +145,37 @@ class DataHandler:
                     'Layer Time': (last_network_layer_start_time + timedelta(minutes=min_to_layer)),
                     'State': state,
                     'Layers to Layer': layer - last_layer,
-                    'Minutes to Layer': (layer - last_layer)*5
+                    'Minutes to Layer': (layer - last_layer)*5,
+                    'Reward': None
                 })
 
         assigned_layers = sorted(assigned_layers, key=lambda x: x['Layer'])
         return assigned_layers
+    
+    @staticmethod
+    def get_rewards(layers, epoch, config):
+        #print(layers)
+
+        coinbases = set(entry['Coinbase'] for entry in layers)
+        rewards = []
+
+        for coinbase in coinbases:
+            rewards.extend(DatabaseAPI.get_rewards(coinbase, epoch, config['state_file']))
+
+        return rewards
+    
+    @staticmethod
+    def append_rewards(rewards, layers):
+        for reward in rewards:
+            coinbase = reward['Coinbase']
+            layer = reward['Layer']
+            nodes = list(filter(lambda entry: entry.get('Layer') == layer and entry.get('Coinbase') == coinbase, layers))
+
+            if len(nodes) == 1:
+                nodes[0]['Reward'] = reward['Reward']
+
+            if len(nodes) > 1:
+                for node in nodes:
+                    if not node['Reward']:
+                        node['Reward'] = reward['Reward']
+    

@@ -18,7 +18,11 @@ Or subscribe to my YouTube channel where I talk a lot about Spacemesh, clean old
 https://www.youtube.com/channel/UCakvG7QQp4oL0Rtpiei1yKg
 
 ### Updates
+11/6/2023: Added Rewards
 11/5/2023: Added coinbase to layers.
+
+### TODO:
+- Currently there is little to no error handling. If an API returns bad results the program will likely crash.
 
 ### Set Up
 If you haven't already, create your config with 

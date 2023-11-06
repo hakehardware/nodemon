@@ -5,7 +5,7 @@ from textual.containers import ScrollableContainer, Container
 
 from components.nodeloading import NodeLoading
 
-LAYER_TABLE_HEADERS = ["Layer", "Node", "State", "Coinbase", "Layers to Layer", "Minutes to Layer", "Layer Time"]
+LAYER_TABLE_HEADERS = ["Layer", "Node", "State", "Coinbase", "Reward", "Layers to Layer", "Minutes to Layer", "Layer Time"]
 
 class LayersScreen(Screen):
     def __init__(self) -> None:
@@ -43,6 +43,7 @@ class LayersScreen(Screen):
                     layer['Node Name'], 
                     layer['State'],
                     f"{layer['Coinbase'][:4]}....{layer['Coinbase'][-4:]}",
+                    f"{layer['Reward']} SMH" if layer['Reward'] else "Pending",
                     layer['Layers to Layer'],
                     layer['Minutes to Layer'],
                     layer['Layer Time'].strftime("%b %d, %Y %H:%M:%S")], key=str(index)
@@ -53,6 +54,7 @@ class LayersScreen(Screen):
                 table.update_cell( str(index), "1", layer['Node Name'])
                 table.update_cell( str(index), "2", layer['State'])
                 table.update_cell( str(index), "3", f"{layer['Coinbase'][:4]}....{layer['Coinbase'][-4:]}")
-                table.update_cell( str(index), "4", layer['Layers to Layer'])
-                table.update_cell( str(index), "5", layer['Minutes to Layer'])
-                table.update_cell( str(index), "6", layer['Layer Time'].strftime("%b %d, %Y %H:%M:%S"))
+                table.update_cell( str(index), "4", f"{layer['Reward']} SMH" if layer['Reward'] else "Pending")
+                table.update_cell( str(index), "5", layer['Layers to Layer'])
+                table.update_cell( str(index), "6", layer['Minutes to Layer'])
+                table.update_cell( str(index), "7", layer['Layer Time'].strftime("%b %d, %Y %H:%M:%S"))

@@ -3,6 +3,7 @@ from utils.helpers import Helpers
 import traceback
 import asyncio
 import aiohttp
+import sqlite3
 
 class GRPCAPI:
     @staticmethod
@@ -255,22 +256,47 @@ class GRPCAPI:
 class ExplorerAPI:
     @staticmethod
     async def get_layers():
-        url = "https://mainnet-explorer-1-api.spacemesh.network/layers"
-        
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as response:
-                if response.status == 200:
-                    data = await response.json()
-                    return data['data']
-                else:
-                    return None
+        try:
+            url = "https://mainnet-explorer-1-api.spacemesh.network/layers"
+            
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url) as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        return data['data']
+                    else:
+                        return None
+                    
+        except:
+            return None
                 
 
 
 class DatabaseAPI:
     @staticmethod
-    async def get_rewards(coinbase):
-        pass
+    def get_rewards(coinbase, epoch, db_location):
+        hex_coinbase = Helpers.bech32_to_hex(coinbase)
+
+        connection = sqlite3.connect(db_location)
+        cursor = connection.cursor()
+        query = f'select * from rewards where lower(hex(coinbase)) = "{hex_coinbase}"'
+
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        rewards = []
+        for r in results:
+            reward_epoch = int(r[1]/4032)
+            reward = round(r[2] / 1000000000, 3)
+            if epoch == reward_epoch:
+                rewards.append({
+                    'Coinbase': Helpers.hex_to_bech32(r[0]), 
+                    'Epoch': reward_epoch, 
+                    'Layer': r[1],
+                    'Reward': reward
+                })
+
+        return rewards
 
     async def get_transactions(coinbase):
         pass
