@@ -157,17 +157,22 @@ class DataHandler:
     @staticmethod
     def get_rewards(layers, epoch, config):
         #print(layers)
+        try:
+            coinbases = set(entry['Coinbase'] for entry in layers)
+            rewards = []
 
-        coinbases = set(entry['Coinbase'] for entry in layers)
-        rewards = []
+            for coinbase in coinbases:
+                rewards.extend(DatabaseAPI.get_rewards(coinbase, epoch, config['state_file']))
 
-        for coinbase in coinbases:
-            rewards.extend(DatabaseAPI.get_rewards(coinbase, epoch, config['state_file']))
-
-        return rewards
+            return rewards
+        except:
+            return None
     
     @staticmethod
     def append_rewards(rewards, layers):
+        if not rewards:
+            return None
+        
         for reward in rewards:
             coinbase = reward['Coinbase']
             layer = reward['Layer']
