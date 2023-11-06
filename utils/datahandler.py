@@ -171,6 +171,8 @@ class DataHandler:
     @staticmethod
     def append_rewards(rewards, layers):
         if not rewards:
+            for layer in layers:
+                layer['Reward'] = 'N/A'
             return None
         
         for reward in rewards:
@@ -184,5 +186,5 @@ class DataHandler:
             if len(nodes) > 1:
                 for node in nodes:
                     if not node['Reward']:
-                        node['Reward'] = reward['Reward']
+                        node['Reward'] = f"{reward['Reward']} SMH"
     

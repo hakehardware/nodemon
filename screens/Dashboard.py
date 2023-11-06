@@ -18,6 +18,7 @@ Or subscribe to my YouTube channel where I talk a lot about Spacemesh, clean old
 https://www.youtube.com/channel/UCakvG7QQp4oL0Rtpiei1yKg
 
 ### Updates
+- 11/6/2023: Updated README and example config. Users can also not connect a db and still use the app
 - 11/6/2023: Added Rewards (If you get two rewards on the same layer, it will aggregate them together and show the wrong value). I will fix this in a future version.
 - 11/5/2023: Added coinbase to layers.
 
@@ -28,7 +29,7 @@ https://www.youtube.com/channel/UCakvG7QQp4oL0Rtpiei1yKg
 If you haven't already, create your config with 
 `cp example.config.json config.json` (linux) 
 
-Then for each node you have, create an entry that mimicks the example. 
+Then for each node you have, create an entry that mimicks the example. If you have a local state.sql file you can connect to it and view rewards by updating the state_file entry in the config.
 
 **NOTE:** Make sure that the config.mainnet.json for each node has the private grpc IP 
 set to accept connections outside local host: `grpc-private-listener": "0.0.0.0:9093"`
