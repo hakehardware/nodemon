@@ -17,6 +17,9 @@ https://explorer.spacemesh.io/accounts/sm1qqqqqqxl2phuunmsp8dm7hpywszakex34ce52z
 Or subscribe to my YouTube channel where I talk a lot about Spacemesh, clean old GPUs, and do generally nerdy stuff: 
 https://www.youtube.com/channel/UCakvG7QQp4oL0Rtpiei1yKg
 
+### Updates
+11/5/2023: Added coinbase to layers.
+
 ### Set Up
 If you haven't already, create your config with 
 `cp example.config.json config.json` (linux) 

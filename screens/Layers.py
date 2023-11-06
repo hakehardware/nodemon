@@ -42,7 +42,7 @@ class LayersScreen(Screen):
                     layer['Layer'], 
                     layer['Node Name'], 
                     layer['State'],
-                    layer['Coinbase'],
+                    f"{layer['Coinbase'][:4]}....{layer['Coinbase'][-4:]}",
                     layer['Layers to Layer'],
                     layer['Minutes to Layer'],
                     layer['Layer Time'].strftime("%b %d, %Y %H:%M:%S")], key=str(index)
@@ -52,7 +52,7 @@ class LayersScreen(Screen):
                 table.update_cell( str(index), "0", layer['Layer'])
                 table.update_cell( str(index), "1", layer['Node Name'])
                 table.update_cell( str(index), "2", layer['State'])
-                table.update_cell( str(index), "3", layer['Coinbase'])
+                table.update_cell( str(index), "3", f"{layer['Coinbase'][:4]}....{layer['Coinbase'][-4:]}")
                 table.update_cell( str(index), "4", layer['Layers to Layer'])
                 table.update_cell( str(index), "5", layer['Minutes to Layer'])
                 table.update_cell( str(index), "6", layer['Layer Time'].strftime("%b %d, %Y %H:%M:%S"))
