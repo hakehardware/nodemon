@@ -19,6 +19,7 @@ class DataHandler:
         # Get data from nodes
         node_data = [node.get_data() for node in nodes]
         layers = await ExplorerAPI.get_layers()
+        # print(len(layers))
 
         # Get Layer Data
         last_network_layer = DataHandler.get_last_network_layer(layers)
@@ -58,6 +59,7 @@ class DataHandler:
                 total_offline+=1
 
         all_assigned_layers = sorted(all_assigned_layers, key=lambda x:x['Layer'])
+        print(f"All Assigned Layers: {len(all_assigned_layers)}")
 
         rewards = DataHandler.get_rewards(all_assigned_layers, last_network_layer['Epoch'], config)
 
@@ -115,7 +117,7 @@ class DataHandler:
         for layer in all_assigned_layers:
             if layer['State'] == 'Current':
                 return layer
-            if layer['State'] == 'Pending':
+            if layer['State'] == 'Waiting':
                 return layer
         
         return None

@@ -71,6 +71,7 @@ class Helpers:
         hrp, words = bech32.bech32_decode(bech32_string)
         data = bech32.convertbits(words, frombits=5, tobits=8, pad=False)
         return bytes(data).hex()
+    
     @staticmethod
     def hex_to_bech32(hex_string):
         """Encode a hexadecimal string as a Bech32 string."""
