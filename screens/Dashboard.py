@@ -18,8 +18,8 @@ Or subscribe to my YouTube channel where I talk a lot about Spacemesh, clean old
 https://www.youtube.com/channel/UCakvG7QQp4oL0Rtpiei1yKg
 
 ### Updates
-11/6/2023: Added Rewards
-11/5/2023: Added coinbase to layers.
+- 11/6/2023: Added Rewards (If you get two rewards on the same layer, it will aggregate them together and show the wrong value). I will fix this in a future version.
+- 11/5/2023: Added coinbase to layers.
 
 ### TODO:
 - Currently there is little to no error handling. If an API returns bad results the program will likely crash.
@@ -45,12 +45,11 @@ view of all of your nodes.
 - Total PoST GiB: Total space of all your nodes
 - Total Offline: Number of nodes that are offline
 - Total Not Synced: Number of nodes that are not syced
-- Last Network Layer: The last layer completed by the network
 - Total Assigned Layers: Sum of assigned layers from all nodes
+- Last Completed Layer: Last layer the network completed
 - Next Assigned Layer: The next layer from all connected nodes that will be reached
-- Last Network Layer: The last layer completed by the network
-- TTNL: Time to Next Layer, this is the approximate time until your next assigned layer, along with the number
-of layers until your next assigned layer is reached
+- Next Layer Time: Approximate time the next layer will be reached
+- Layers to Layer: How many layers until your next assigned layer
 
 You can always return to the dashboard by pressing 'd' or by clicking the 'D' in the footer. 
 
@@ -88,6 +87,8 @@ class DashboardScreen(Screen):
     def build_update(self, data):
         return f"""
 ## Overview
+
+### General
 **Total Nodes:** {data['Total Nodes']}
 
 **Total Space Units:** {data['Total Space Units']}
@@ -101,6 +102,8 @@ class DashboardScreen(Screen):
 **Total Assigned Layers:** {len(data['All Assigned Layers'])}
 
 **Last Completed Layer:** {data['Last Network Layer']['Number']}
+
+### Assigned Layers
 
 **Next Assigned Layer:** {data['Next Layer']['Layer'] if data['Next Layer'] else "None"}
 

@@ -59,7 +59,7 @@ class DataHandler:
                 total_offline+=1
 
         all_assigned_layers = sorted(all_assigned_layers, key=lambda x:x['Layer'])
-        print(f"All Assigned Layers: {len(all_assigned_layers)}")
+        print(f"All Assigned Layers: {len(all_assigned_layers)}") if verbose else False
 
         rewards = DataHandler.get_rewards(all_assigned_layers, last_network_layer['Epoch'], config)
 
