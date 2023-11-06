@@ -42,6 +42,7 @@ class LayersScreen(Screen):
                     layer['Layer'], 
                     layer['Node Name'], 
                     layer['State'],
+                    layer['Coinbase'],
                     layer['Layers to Layer'],
                     layer['Minutes to Layer'],
                     layer['Layer Time'].strftime("%b %d, %Y %H:%M:%S")], key=str(index)
