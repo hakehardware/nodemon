@@ -99,5 +99,5 @@ class DashboardScreen(Screen):
 
 **Next Layer Time:** {data['Next Layer']['Layer Time'].strftime("%b %d, %Y %H:%M:%S") if data['Next Layer'] else "None"}
 
-**Layers to Layers:** {data['Next Layer']['Layers to Layer'] if data['Next Layer'] else "None"}
+**Layers to Layer:** {data['Next Layer']['Layers to Layer'] if data['Next Layer'] else "None"}
 """

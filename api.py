@@ -264,3 +264,15 @@ class ExplorerAPI:
                     return data['data']
                 else:
                     return None
+                
+
+
+class DatabaseAPI:
+    @staticmethod
+    async def get_rewards(coinbase):
+        pass
+
+    async def get_transactions(coinbase):
+        pass
+
+    

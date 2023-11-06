@@ -5,7 +5,7 @@ from textual.containers import ScrollableContainer, Container
 
 from components.nodeloading import NodeLoading
 
-LAYER_TABLE_HEADERS = ["Layer", "Node", "State", "Layers to Layer", "Minutes to Layer", "Layer Time"]
+LAYER_TABLE_HEADERS = ["Layer", "Node", "State", "Coinbase", "Layers to Layer", "Minutes to Layer", "Layer Time"]
 
 class LayersScreen(Screen):
     def __init__(self) -> None:
@@ -51,6 +51,7 @@ class LayersScreen(Screen):
                 table.update_cell( str(index), "0", layer['Layer'])
                 table.update_cell( str(index), "1", layer['Node Name'])
                 table.update_cell( str(index), "2", layer['State'])
-                table.update_cell( str(index), "3", layer['Layers to Layer'])
-                table.update_cell( str(index), "4", layer['Minutes to Layer'])
-                table.update_cell( str(index), "5", layer['Layer Time'].strftime("%b %d, %Y %H:%M:%S"))
+                table.update_cell( str(index), "3", layer['Coinbase'])
+                table.update_cell( str(index), "4", layer['Layers to Layer'])
+                table.update_cell( str(index), "5", layer['Minutes to Layer'])
+                table.update_cell( str(index), "6", layer['Layer Time'].strftime("%b %d, %Y %H:%M:%S"))

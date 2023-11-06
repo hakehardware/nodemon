@@ -132,6 +132,7 @@ class DataHandler:
 
                 assigned_layers.append({
                     'Node Name': node['info']['node_name'],
+                    'Coinbase': node['smeshing']['coinbase'],
                     'Layer': layer,
                     'Layer Time': (last_network_layer_start_time + timedelta(minutes=min_to_layer)),
                     'State': state,
