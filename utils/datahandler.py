@@ -38,8 +38,10 @@ class DataHandler:
 
         for node in node_data:
             if node['info']['status'] == "Online":
+
                 # Space Units
-                total_space_units+=node['smeshing']['space_units']
+                if node['smeshing']['space_units']:
+                    total_space_units+=node['smeshing']['space_units']
 
                 # Sync State
                 if not node['network']['is_synced']:
