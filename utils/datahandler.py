@@ -188,5 +188,5 @@ class DataHandler:
             if len(nodes) > 1:
                 for node in nodes:
                     if not node['Reward']:
-                        node['Reward'] = f"{reward['Reward']} SMH"
+                        node['Reward'] = reward['Reward']
     
