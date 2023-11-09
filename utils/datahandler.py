@@ -47,7 +47,8 @@ class DataHandler:
                     total_not_synced+=1
 
                 # PoST GiB
-                total_post_gib+=node['smeshing']['size_gib']
+                if node['smeshing']['size_gib']:
+                    total_post_gib+=node['smeshing']['size_gib']
 
                 # Assigned Layers
                 assigned_layers = DataHandler.get_assigned_layers(
