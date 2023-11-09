@@ -2,7 +2,6 @@ import asyncio
 from node import Node
 from api import ExplorerAPI, DatabaseAPI
 from datetime import datetime, timedelta
-from dateutil import tz
 
 class DataHandler:
     @staticmethod
@@ -18,7 +17,7 @@ class DataHandler:
 
         # Get data from nodes
         node_data = [node.get_data() for node in nodes]
-        layers = await ExplorerAPI.get_layers()
+        layers = ExplorerAPI.get_layers()
         # print(len(layers))
 
         # Get Layer Data

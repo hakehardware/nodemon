@@ -1,9 +1,9 @@
-from grpc_lib import ActivationClient, AdminClient, NodeClient, SmesherClient, DebugClient, GlobalStateClient, MeshClient
+from grpc_lib import ActivationClient, AdminClient, NodeClient, SmesherClient
 from utils.helpers import Helpers
 import traceback
 import asyncio
-import aiohttp
 import sqlite3
+import requests
 
 class GRPCAPI:
     @staticmethod
@@ -253,23 +253,18 @@ class GRPCAPI:
         
 
 
-class ExplorerAPI:
-    @staticmethod
-    async def get_layers():
-        try:
-            url = "https://mainnet-explorer-1-api.spacemesh.network/layers"
-            
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url) as response:
-                    if response.status == 200:
-                        data = await response.json()
-                        return data['data']
-                    else:
-                        return None
-                    
-        except:
-            return None
-                
+class ExplorerAPI:      
+    def get_layers():
+        url = "https://mainnet-explorer-1-api.spacemesh.network/layers"
+        response = requests.get(url)
+        data = None
+
+        if response.status_code == 200:
+            # Parse the JSON response
+            data = response.json()
+            return data['data']
+        
+        return data
 
 
 class DatabaseAPI:

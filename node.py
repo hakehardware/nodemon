@@ -1,6 +1,4 @@
-import json
 from api import GRPCAPI
-from time import time
 from datetime import datetime
 import asyncio
 import traceback
