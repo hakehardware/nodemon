@@ -117,7 +117,8 @@ class GRPCAPI:
             results = await asyncio.to_thread(smesher_client.get_smesher_id)
 
             data = {
-                'node_id': results.get("publicKey", None)
+                'node_id': results.get("publicKey", None),
+                'node_id_hex': None,
             }
 
             return data
