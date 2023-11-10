@@ -44,11 +44,14 @@ class Nodemon(App):
     async def node_worker(self):
 
         while True:
-            data = await DataHandler.handle_data(self.config, False)
+            try:
+                data = await DataHandler.handle_data(self.config, False)
 
-            self.SCREENS['dashboard'].update_components(data)
-            self.SCREENS['nodes'].update_table(data)
-            self.SCREENS['layers'].update_table(data)
+                self.SCREENS['dashboard'].update_components(data)
+                self.SCREENS['nodes'].update_table(data)
+                self.SCREENS['layers'].update_table(data)
+            except:
+                pass
 
             await asyncio.sleep(300)
 

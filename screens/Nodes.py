@@ -56,7 +56,10 @@ class NodesScreen(Screen):
         node_table.zebra_stripes = True
 
         for index, header in enumerate(NODE_TABLE_HEADERS):
-            node_table.add_column(header, key=str(index))
+            if header == 'Status':
+                node_table.add_column(header, key=str(index), width=8)
+            else:
+                node_table.add_column(header, key=str(index))
 
     def action_move_page(self, direction):
         if direction == 'left':
