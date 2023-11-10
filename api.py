@@ -170,6 +170,7 @@ class GRPCAPI:
 
     @staticmethod
     async def get_post_setup_status_providers(ip):
+        return None # Not needed but don't want to do a big refactor
         try:
 
             smesher_client = SmesherClient(ip)
