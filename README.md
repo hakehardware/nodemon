@@ -1,6 +1,9 @@
 # Nodemon
 Monitors a Spacemesh Node
 
+### Install Instructions (Windows)
+https://open.substack.com/pub/hakedev/p/nodemon-windows-installation?r=2t6qg6&utm_campaign=post&utm_medium=web
+https://www.youtube.com/watch?v=D2zGGUIPrOo
 
 ### Install Instructions (Ubuntu)
 
