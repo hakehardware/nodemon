@@ -125,7 +125,49 @@ class Helpers:
                 json.dump(export_layers, json_file, indent=4)
 
         if(options_selected['Nodes JSON']):
-            pass
+            export_node = {}
+            for node in node_data:
+                node_id = node['smeshing']['node_id_hex']
+                export_node[node_id] = {
+                    'Node Name': node['info']['node_name'],
+                    'Node ID': node['smeshing']['node_id'],
+                    'Status': node['info']['status'], 
+                    'Version': node['info']['version'], 
+                    'Host': node['network']['host'], 
+                    'Peers': node['network']['peers'], 
+                    'Is Synced': node['network']['is_synced'],
+                    'Top Layer': node['network']['top_layer'], 
+                    'Verified Layer': node['network']['verified_layer'], 
+                    'Synced Layer': node['network']['synced_layer'], 
+                    'Is Smeshing': node['smeshing']['is_smeshing'], 
+                    'PoST State': node['smeshing']['post_state'], 
+                    'Space Units': node['smeshing']['space_units'], 
+                    'Size GiB': node['smeshing']['size_gib'], 
+                    'Assigned Layers Count': node['smeshing']['assigned_layers_count'],
+                    'Assinged Layers': node['smeshing']['assigned_layers']
+                }
+            with open('nodes.json', 'w') as json_file:
+                json.dump(export_node, json_file, indent=4)
 
         if(options_selected['Nodes CSV']):
-            pass
+            export_nodes = []
+            for node in node_data:
+                export_nodes.append([                    
+                    node['info']['node_name'],
+                    node['info']['status'], 
+                    node['info']['version'], 
+                    node['network']['host'], 
+                    node['network']['peers'], 
+                    node['network']['is_synced'],
+                    node['network']['top_layer'], 
+                    node['network']['verified_layer'], 
+                    node['network']['synced_layer'], 
+                    node['smeshing']['is_smeshing'], 
+                    node['smeshing']['post_state'], 
+                    node['smeshing']['space_units'], 
+                    node['smeshing']['size_gib'], 
+                    node['smeshing']['assigned_layers_count']
+                ])
+            with open('nodes.csv', 'w', newline='') as csv_file:
+                csv_writer = csv.writer(csv_file)
+                csv_writer.writerows(export_nodes)

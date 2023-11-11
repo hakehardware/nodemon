@@ -135,7 +135,7 @@ class DataHandler:
                 current_layer = last_layer + 1
                 state = None
 
-                if current_layer + 1 == layer:
+                if current_layer == layer:
                     state = 'Current'
                 elif layer > current_layer:
                     state = 'Waiting'

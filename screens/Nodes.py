@@ -9,7 +9,7 @@ import csv
 from components.nodeloading import NodeLoading
 from utils.helpers import Helpers
 
-NODE_TABLE_HEADERS = ["Name", "Status", "Version", "IP", "Peers", "Synced", "Top", "Verified", "Synced", "Smeshing", "PoST State", "SU", "GiB", "Layers"]
+NODE_TABLE_HEADERS = ["Name", "ID", "Status", "Version", "IP", "Peers", "Synced", "Top", "Verified", "Synced", "Smeshing", "PoST State", "SU", "GiB", "Layers"]
 class NodeData(Container):
     def compose(self) -> ComposeResult:
         # with Container(id='log-container'):
@@ -129,6 +129,7 @@ class NodesScreen(Screen):
             if not table.is_valid_row_index(index):
                 table.add_row( *[
                     node_data['info']['node_name'],
+                    f"{node_data['smeshing']['node_id_hex'][:4]}....{node_data['smeshing']['node_id_hex'][-4:]}",
                     node_data['info']['status'], 
                     node_data['info']['version'], 
                     node_data['network']['host'], 
@@ -147,16 +148,17 @@ class NodesScreen(Screen):
                 self.first_load = False
             else:
                 table.update_cell( str(index), "0", node_data['info']['node_name'])
-                table.update_cell( str(index), "1", node_data['info']['status'])
-                table.update_cell( str(index), "2", node_data['info']['version'])
-                table.update_cell( str(index), "3", node_data['network']['host'])
-                table.update_cell( str(index), "4", node_data['network']['peers'])
-                table.update_cell( str(index), "5", node_data['network']['is_synced'])
-                table.update_cell( str(index), "6", node_data['network']['top_layer'])
-                table.update_cell( str(index), "7", node_data['network']['verified_layer'])
-                table.update_cell( str(index), "8", node_data['network']['synced_layer'])
-                table.update_cell( str(index), "9", node_data['smeshing']['is_smeshing'])
-                table.update_cell( str(index), "10", node_data['smeshing']['post_state'])
-                table.update_cell( str(index), "11", node_data['smeshing']['space_units'])
-                table.update_cell( str(index), "12", node_data['smeshing']['size_gib'])
-                table.update_cell( str(index), "13", node_data['smeshing']['assigned_layers_count'])
+                table.update_cell( str(index), "1", f"{node_data['smeshing']['node_id_hex'][:4]}....{node_data['smeshing']['node_id_hex'][-4:]}")
+                table.update_cell( str(index), "2", node_data['info']['status'])
+                table.update_cell( str(index), "3", node_data['info']['version'])
+                table.update_cell( str(index), "4", node_data['network']['host'])
+                table.update_cell( str(index), "5", node_data['network']['peers'])
+                table.update_cell( str(index), "6", node_data['network']['is_synced'])
+                table.update_cell( str(index), "7", node_data['network']['top_layer'])
+                table.update_cell( str(index), "8", node_data['network']['verified_layer'])
+                table.update_cell( str(index), "9", node_data['network']['synced_layer'])
+                table.update_cell( str(index), "10", node_data['smeshing']['is_smeshing'])
+                table.update_cell( str(index), "11", node_data['smeshing']['post_state'])
+                table.update_cell( str(index), "12", node_data['smeshing']['space_units'])
+                table.update_cell( str(index), "13", node_data['smeshing']['size_gib'])
+                table.update_cell( str(index), "14", node_data['smeshing']['assigned_layers_count'])

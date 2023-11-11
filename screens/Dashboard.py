@@ -18,12 +18,14 @@ Or subscribe to my YouTube channel where I talk a lot about Spacemesh, clean old
 https://www.youtube.com/channel/UCakvG7QQp4oL0Rtpiei1yKg
 
 ### Updates
+- 11/11/2023: Big update to add exporting. You must wait for your nodes to load in order to export. Export will be to the directory nodemon is in. You can upload the Layers (JSON) file to the Spacemesh Reward Tracker to track your layers and rewards there as well. 
 - 11/6/2023: Updated README and example config. Users can also not connect a db and still use the app
 - 11/6/2023: Added Rewards (If you get two rewards on the same layer, it will aggregate them together and show the wrong value). I will fix this in a future version.
 - 11/5/2023: Added coinbase to layers.
 
 ### TODO:
-- Currently there is little to no error handling. If an API returns bad results the program will likely crash.
+- The UI may freeze a bit when initially loading data. This will be fixed in the refactor. 
+- Refactor will begin shortly so mostly bug fixes for the time being. Nodemon V4 will come with lots of big improvements but expect a release date mid-December.
 
 ### Set Up
 If you haven't already, create your config with 

@@ -75,7 +75,8 @@ class Nodemon(App):
             await asyncio.sleep(300)
 
     def action_export(self) -> None:
-        self.push_screen(ExportScreen())
+        if not self.SCREENS['nodes'].first_load:
+            self.push_screen(ExportScreen())
 
     @on(Button.Pressed, '#cancel-btn')
     def cancel_button_pressed(self) -> None:
