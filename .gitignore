@@ -1,5 +1,9 @@
 # Ignore the config.json file
 config.json
+layers.csv
+layers.json
+nodes.csv
+nodes.json
 
 # Ignore Test Py
 test.py
