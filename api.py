@@ -4,6 +4,8 @@ import traceback
 import asyncio
 import sqlite3
 import requests
+import binascii
+import base64
 
 class GRPCAPI:
     @staticmethod
@@ -115,10 +117,13 @@ class GRPCAPI:
         try:
             smesher_client = SmesherClient(ip)
             results = await asyncio.to_thread(smesher_client.get_smesher_id)
+            node_id = results.get("publicKey", None)
+            base64_bytes = base64.b64decode(node_id)
+            node_id_hex = binascii.hexlify(base64_bytes).decode('utf-8')
 
             data = {
-                'node_id': results.get("publicKey", None),
-                'node_id_hex': None,
+                'node_id': node_id,
+                'node_id_hex': node_id_hex,
             }
 
             return data
@@ -217,7 +222,8 @@ class GRPCAPI:
                         'epoch': eligibilities['epoch'],
                         'log': event['help'],
                         'timestamp': Helpers.get_date(event['timestamp']),
-                        'layers': layers
+                        'layers': layers,
+                        'eligibilities': eligibilities['eligibilities']
                     })
                     
                 elif poetwaitproof:

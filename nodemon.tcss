@@ -98,3 +98,41 @@ DataTable {
     border: none;
     height: 1;
 }
+
+# Modal
+#dialog {
+    grid-size: 2 5;
+    grid-gutter: 0;
+    padding: 0 1;
+    width: 60;
+    height: 22;
+    border: thick $background 80%;
+    background: $surface;
+}
+#question {
+    column-span: 2;
+    height: 1fr;
+    width: 1fr;
+    content-align: center middle;
+}
+
+#cancel-btn {
+    column-span: 2;
+    width: 1fr;
+    content-align: center middle;
+}
+#export-btn {
+    column-span: 2;
+    width: 1fr;
+    content-align: center middle;
+}
+
+ExportScreen {
+    align: center middle;
+}
+
+Checkbox {
+    padding: 0;
+    margin: 0;
+    width: 1fr;
+}

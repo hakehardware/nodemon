@@ -5,7 +5,7 @@ from textual.containers import Container, ScrollableContainer
 from textual import on
 from textual.binding import Binding
 from datetime import datetime
-
+import csv
 from components.nodeloading import NodeLoading
 from utils.helpers import Helpers
 
@@ -40,6 +40,7 @@ class NodesScreen(Screen):
         self.first_load = True
         self.selected_node = 0
         self.node_data = None
+        self.assigned_layers = None
         super().__init__()
 
     def compose(self) -> ComposeResult:
@@ -105,10 +106,14 @@ class NodesScreen(Screen):
         node_data = Helpers.generate_node_info(self.node_data[self.selected_node])
         self.query_one('#node-data-markdown').update(node_data)
 
+    def export_node_data(self, options_selected):
+        Helpers.write_csv(self.assigned_layers, self.node_data, options_selected)
+
 
     def update_table(self, data):
         table = self.query_one('#node-table')
         self.node_data = data['Node Data']
+        self.assigned_layers = data['All Assigned Layers']
 
         current_time = datetime.now().strftime("%b %d, %Y %H:%M:%S")
 

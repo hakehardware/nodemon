@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 from dateutil import tz
 import bech32
+import csv
+import json
 
 class Helpers:
     @staticmethod
@@ -46,6 +48,8 @@ class Helpers:
 
 **Node ID:** {data['smeshing']['node_id']}
 
+**Node ID Hex:** {data['smeshing']['node_id_hex']}
+
 **Coinbase:** {data['smeshing']['coinbase']}
 
 ### Smeshing
@@ -88,3 +92,40 @@ class Helpers:
         bech32_string = bech32.bech32_encode("sm", words)
         
         return bech32_string
+
+    @staticmethod
+    def write_csv(layers, node_data, options_selected):
+        if options_selected['Layers CSV']:
+            export_layers = []
+            for layer in layers:
+                export_layers.append([
+                    layer['Node Name'],
+                    layer['Coinbase'],
+                    layer['Layer'],
+                    layer['Layer Time'].strftime("%b %d, %Y %H:%M:%S"),
+                    layer['State'],
+                    layer['Layers to Layer'],
+                    layer['Minutes to Layer'],
+                    layer['Reward'] if layer['Reward'] else 0
+                ])
+            with open('layers.csv', 'w', newline='') as csv_file:
+                csv_writer = csv.writer(csv_file)
+                csv_writer.writerows(export_layers)
+
+        if options_selected['Layers JSON']:
+            export_layers = {}
+            for node in node_data:
+                node_id = node['smeshing']['node_id_hex']
+                result = next(filter(lambda d: d.get('event_name') == 'Layer Eligibilities', node['logs']), None)
+                if result:
+                    export_layers[node_id] = result['eligibilities']
+                
+
+            with open('layers.json', 'w') as json_file:
+                json.dump(export_layers, json_file, indent=4)
+
+        if(options_selected['Nodes JSON']):
+            pass
+
+        if(options_selected['Nodes CSV']):
+            pass

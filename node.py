@@ -97,6 +97,7 @@ class Node:
                 # Set Smeshing
                 self.smeshing['is_smeshing'] = results[5]['is_smeshing']
                 self.smeshing['node_id'] = results[6]['node_id']
+                self.smeshing['node_id_hex'] = results[6]['node_id_hex']
                 self.smeshing['coinbase'] = results[7]['coinbase']
                 self.smeshing['post_state'] = results[8]['post_state']
                 self.smeshing['post_data_dir'] = results[8]['post_data_dir']
