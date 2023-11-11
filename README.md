@@ -3,6 +3,7 @@ Monitors a Spacemesh Node
 
 ### Install Instructions (Windows)
 [![Watch on YouTube](https://img.youtube.com/vi/D2zGGUIPrOo/0.jpg)](https://www.youtube.com/watch?v=D2zGGUIPrOo)
+
 Or Read on Substack: https://open.substack.com/pub/hakedev/p/nodemon-windows-installation?r=2t6qg6&utm_campaign=post&utm_medium=web
 
 ### Install Instructions (Ubuntu)
