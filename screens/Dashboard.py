@@ -98,6 +98,8 @@ class DashboardScreen(Screen):
 
 **Total PoST GiB:** {data['Total PoST GiB']}
 
+**Epoch Rewards:** {data['Epoch Rewards']}
+
 **Total Offline:** {data['Total Offline']}
 
 **Total Not Synced:** {data['Total Not Synced']}

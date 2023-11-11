@@ -64,6 +64,10 @@ class DataHandler:
         print(f"All Assigned Layers: {len(all_assigned_layers)}") if verbose else False
 
         rewards = DataHandler.get_rewards(all_assigned_layers, last_network_layer['Epoch'], config)
+        total_rewards = 0
+
+        for reward in rewards:
+            total_rewards+=reward['Reward']
 
         DataHandler.append_rewards(rewards, all_assigned_layers)
 
@@ -79,7 +83,8 @@ class DataHandler:
             'Total Nodes': total_nodes,
             'Total Offline': total_offline,
             'Next Layer': next_layer,
-            'Rewards': rewards
+            'Rewards': rewards,
+            'Epoch Rewards': f'{round(total_rewards, 2)} SMH'
         }
         
 
