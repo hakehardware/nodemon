@@ -116,7 +116,7 @@ class Helpers:
             export_layers = {}
             for node in node_data:
                 node_id = node['smeshing']['node_id_hex']
-                result = next(filter(lambda d: d.get('event_name') == 'Layer Eligibilities' and node_data['network']['current_epoch'] == d.get('epoch'), node['logs']), None)
+                result = next(filter(lambda d: d.get('event_name') == 'Layer Eligibilities' and node['network']['current_epoch'] == d.get('epoch'), node['logs']), None)
                 if result:
                     export_layers[node_id] = result['eligibilities']
                 
