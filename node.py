@@ -7,9 +7,9 @@ class Node:
     def __init__(self, config) -> None:
         self.info = {
             "node_name": config['name'],
-            "version": None,
-            "build": None,
-            "heartbeat": None,
+            "version": "None",
+            "build": "None",
+            "heartbeat": "None",
             "status": 'Offline'
         }
 
@@ -17,33 +17,34 @@ class Node:
             "public_address": config['public'],
             "private_address": config['private'],
             "host": config['public'].split(':')[0],
-            "peers": None,
+            "peers": "None",
             "is_synced": False,
-            "synced_layer": None,
-            "top_layer": None,
-            "verified_layer": None,
-            "highest_atx": None,
-            "current_epoch": None
+            "synced_layer": "None",
+            "top_layer": "None",
+            "verified_layer": "None",
+            "highest_atx": "None",
+            "current_epoch": "None"
         }
 
         self.genesis = {
-            "first_genesis": None,
-            "epoch_size": None,
-            "effective_genesis": None
+            "first_genesis": "None",
+            "epoch_size": "None",
+            "effective_genesis": 'None'
         }
 
         self.smeshing = {
-            "is_smeshing": None,
-            "node_id": None,
-            "coinbase": None,
-            "post_state": None,
-            "post_data_dir": None,
-            "provider_id": None,
-            "max_file_size_gib": None,
-            "space_units": None,
-            "size_gib": None,
-            "assigned_layers": None,
-            "assigned_layers_count": None
+            "is_smeshing": 'None',
+            "node_id": 'None',
+            "friendly_node_id": None,
+            "coinbase": 'None',
+            "post_state": 'None',
+            "post_data_dir": 'None',
+            "provider_id": 'None',
+            "max_file_size_gib": 'None',
+            "space_units": 'None',
+            "size_gib": 'None',
+            "assigned_layers": 'None',
+            "assigned_layers_count": 'None'
         }
 
         self.rewards = None #TODO
@@ -97,6 +98,7 @@ class Node:
                 # Set Smeshing
                 self.smeshing['is_smeshing'] = results[5]['is_smeshing']
                 self.smeshing['node_id'] = results[6]['node_id']
+                self.smeshing['friendly_node_id'] = f"{results[6]['node_id_hex'][:4]}....{results[6]['node_id_hex'][-4:]}"
                 self.smeshing['node_id_hex'] = results[6]['node_id_hex']
                 self.smeshing['coinbase'] = results[7]['coinbase']
                 self.smeshing['post_state'] = results[8]['post_state']
@@ -120,6 +122,7 @@ class Node:
                 self.logs = results[10]
 
         except Exception as e:
+            
             traceback.print_exc()
 
     def get_data(self):

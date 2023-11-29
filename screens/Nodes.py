@@ -129,7 +129,7 @@ class NodesScreen(Screen):
             if not table.is_valid_row_index(index):
                 table.add_row( *[
                     node_data['info']['node_name'],
-                    f"{node_data['smeshing']['node_id_hex'][:4]}....{node_data['smeshing']['node_id_hex'][-4:]}",
+                    node_data['smeshing']['friendly_node_id'],
                     node_data['info']['status'], 
                     node_data['info']['version'], 
                     node_data['network']['host'], 
@@ -148,7 +148,7 @@ class NodesScreen(Screen):
                 self.first_load = False
             else:
                 table.update_cell( str(index), "0", node_data['info']['node_name'])
-                table.update_cell( str(index), "1", f"{node_data['smeshing']['node_id_hex'][:4]}....{node_data['smeshing']['node_id_hex'][-4:]}")
+                table.update_cell( str(index), "1", node_data['smeshing']['friendly_node_id'])
                 table.update_cell( str(index), "2", node_data['info']['status'])
                 table.update_cell( str(index), "3", node_data['info']['version'])
                 table.update_cell( str(index), "4", node_data['network']['host'])
