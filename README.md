@@ -1,3 +1,5 @@
+# This is currently not working v1.3. It will take me some time to update it.
+
 # Nodemon
 Monitors a Spacemesh Node
 
